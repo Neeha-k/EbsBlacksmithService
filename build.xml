@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<project xmlns:ht="happytrails" name="EbsBlacksmithService-1.0" basedir="." default="release" xmlns:coral="antlib:com.amazon.coral">
+
+    <!-- Import HappyTrails, HappierTrails and Coral helpers -->
+    <import file="${happytrails.root}/happytrails.xml" optional="false"/>
+    <ht:import file="coral-generator.xml"   optional="false"/>
+    <property name="ht.include.cfg" value="true" />
+    <ht:import file="copy-with-permissions.xml"/>
+    <ht:import file="happier-trails.xml" optional="false"/>
+
+    <!-- Set any property overrides -->
+    <property name="coral-src.dir" location="${output.dir}/private/src" />
+    <property name="coral-tst.dir" location="${output.dir}/private/tst" />
+    <property name="coral-model-package" value="EbsBlacksmithServiceModel" />
+
+    <!--
+        Delete this line and remove checkstyle-config.xml to pick up HappierTrails
+        more strict checkstyle ruleset.
+    -->
+    <property name="checkstyle.configuration.file" location="${basedir}/checkstyle-config.xml"/>
+
+    <!-- 
+         Server properties overrides, used only when running in your workspace. When
+         running in Apollo, these properties are set by the HttpServer op-configs
+     -->
+    <property name="http-port" value="8000" />
+    <property name="https-port" value="8001" />
+
+    <!-- Generate the service types, explorer, model index, and abstract activities -->
+    <target name="generate" extensionOf="ht-pre-compile">
+        <mkdir dir="${coral-src.dir}" />
+        <!-- Generate the source -->
+        <coral:generate dir="${coral-src.dir}" mode="explorer,types,index,server" stalecheck="true">
+            <package name="${coral-model-package}"/>
+        </coral:generate>
+        <!-- Compile the coral source -->
+        <ht:compile srcdir="${coral-src.dir}" destdir="${generated.classes.dir}" />
+    </target>
+
+    <!-- Generate activity stubs into src directory -->
+    <target name="generate-stubs">
+        <!-- Generate the source -->
+        <coral:generate dir="${sources.dir}" mode="stub" stalecheck="false">
+            <package name="${coral-model-package}"/>
+        </coral:generate>
+    </target>
+
+    <!-- Generate the Java client for unit tests -->
+    <target name="test-generate" depends="compile" extensionOf="ht-pre-test-compile">
+        <mkdir dir="${coral-tst.dir}" />
+        <!-- Generate the source -->
+        <coral:generate dir="${coral-tst.dir}" mode="javaclient" stalecheck="true">
+            <package name="${coral-model-package}"/>
+        </coral:generate>
+        <!-- Compile the coral source -->
+        <ht:compile srcdir="${coral-tst.dir}" destdir="${testclasses.dir}">
+          <extra-classpath>
+            <path path="${bp:testbuild.classpath}" />
+          </extra-classpath>
+        </ht:compile>
+    </target>
+
+    <!-- Copy files necessary for bb-server to work. -->
+    <target name="setup-server">
+        <copy todir="${output.dir}/private">
+            <fileset dir="${bp:run.configfarm.brazil-config}">
+                <include name="brazil-config/**/*"/>
+            </fileset>
+            <fileset dir="${bp:run.configfarm.certs}">
+                <include name="certs/**/*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Generate the Apollo script to start your service
+         Note: When modifying properties/env/jvmargs/etc here, remember to also
+         update the server target as well
+    -->
+
+    <property name="default-jvm-args" value="
+        -server
+        -Djava.io.tmpdir=${root}/var/tmp
+        -Djava.net.preferIPv4Stack=true
+        -Djavax.net.ssl.trustStore=${root}/certs/InternalAndExternalTrustStore.jks
+        -Djavax.net.ssl.trustStorePassword=amazon
+        -Dsun.net.inetaddr.ttl=60
+        -Dsun.net.inetaddr.negative.ttl=1
+        -XX:+UseG1GC
+        -XX:MaxGCPauseMillis=100
+        -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager
+        -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+        -Dlog4j.configurationFile=log-configuration/log4j2-${domain}.xml"/>
+
+    <taskdef name="generate-wrapper" 
+        classname="com.amazon.happytrails.task.ApolloJavaWrapperGenerator" 
+        classpath="${bp:tool.classpath}"/>
+
+    <target name="generate-wrappers" extensionOf="ht-post-build">
+        <generate-wrapper classname="com.amazonaws.ebsblacksmithservice.EbsBlacksmithService"
+            destinationFile="${output.dir}/bin/run-service.sh"
+            appArgs="--domain=${domain} --realm=${realm} --root=${root}"
+            jvmArgs="${default-jvm-args}"
+            template="perl">
+        </generate-wrapper>
+    </target>
+
+    <!-- Launch the coral server 
+         Note: When modifying properties/env/jvmargs/etc here, remember to also
+         update the apollo-script target as well
+    -->
+    <target name="server" depends="build, setup-server">
+        <exec executable="${bp:[CacheOut]pkg.bin}/cacheoutd" spawn="true">
+          <arg line="-p 11012" />
+          <env key="LD_LIBRARY_PATH"  value="${bp:run.lib}"/>
+        </exec>
+        <java classname="com.amazonaws.ebsblacksmithservice.EbsBlacksmithService" classpath="${bp:run.classpath}" fork="true">
+            <env key="CORAL_CONFIG_PATH" value="${bp:run.coralconfig}"/>
+            <env key="LD_LIBRARY_PATH"  value="${bp:run.lib}"/>
+            <jvmarg value="-Xmx256M"/>
+            <jvmarg value="-Djava.net.preferIPv4Stack=true"/>
+            <jvmarg value="-Dsun.net.inetaddr.ttl=60"/>
+            <jvmarg value="-Dsun.net.inetaddr.negative.ttl=1"/>
+            <jvmarg line="-XX:+UseG1GC"/>
+            <jvmarg line="-XX:MaxGCPauseMillis=100"/>
+
+            <!-- Uncomment this line to allow remote debugging of your `bb server`
+                 See https://w.amazon.com/index.php/JavaRemoteDebug for more information.
+                 <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=localhost:5050" />
+            -->
+            <jvmarg value="-Droot=${output.dir}/private"/>
+            <arg value="--root=${output.dir}/private"/>
+            <arg value="--domain=test"/>
+            <arg value="--realm=us-west-2"/>
+
+            <sysproperty key="java.util.logging.manager" value="org.apache.logging.log4j.jul.LogManager" />
+            <sysproperty key="Log4jContextSelector" value="org.apache.logging.log4j.core.async.AsyncLoggerContextSelector" />
+            <sysproperty key="log4j.configurationFile" value="${basedir}/configuration/log-configuration/log4j2-test.xml" />
+            <sysproperty key="apollo.OCF.HttpServer.httpRegularPort" value="${http-port}" />
+            <sysproperty key="apollo.OCF.HttpServer.httpSecurePort" value="${https-port}" />
+            <sysproperty key="java.io.tmpdir" value="${output.dir}/private/var/tmp" />
+        </java>
+    </target>
+
+</project>
