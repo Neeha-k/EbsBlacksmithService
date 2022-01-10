@@ -23,7 +23,10 @@ package.EbsBlacksmithService = {
             CoralJavaServiceBuildLogic = 1.2;
             CoralExplorerBuildLogic = 1.1;
             CoralGenerator = 1.2;
-            JDK8 = 1.0;
+            # Only Gradle 7.3 and later can run natively on JDK17.
+            # Until this is imported into Brazil and support added in BrazilGradle,
+            # you need to use JDK11 or JDK15 as a build-tool and JDK17 as the runtime dependency of the service.
+            JDK11 = 1.0;
             EbsBlacksmithServiceModel = 1.0;
         };
     };
@@ -52,7 +55,7 @@ package.EbsBlacksmithService = {
         1.0 = {
             AmazonCACerts = 1.0;
             CacheOut = 1.0;
-            JDK8 = 1.0;
+            JDK17 = 1.0;
             log4j = 2.14;
             MinimalProcessManager = 3.0;
             MonitoringCore = 1.0;
