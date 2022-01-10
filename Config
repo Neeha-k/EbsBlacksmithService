@@ -11,15 +11,18 @@ package.EbsBlacksmithService = {
         network-access = blocked;
     };
 
-    build-system = happytrails;
+    build-system = brazil-gradle;
     build-tools = {
         1.0 = {
             ApolloJavaWrapperGenerator = 1.0;
+            BrazilGradle = 6.x;
+            BrazilGradleJavaWrapperGenerator = 1.1;
+            BrazilGradleQualityDefaults = 6.x;
+            BrazilGradleValidateClasspathPlugin = 6.x;
             CoralJavaClientBuildLogic = 1.2;
             CoralJavaServiceBuildLogic = 1.2;
             CoralExplorerBuildLogic = 1.1;
             CoralGenerator = 1.2;
-            HappierTrails = 3.5;
             JDK8 = 1.0;
             EbsBlacksmithServiceModel = 1.0;
         };
@@ -60,7 +63,7 @@ package.EbsBlacksmithService = {
 
     test-dependencies = {
         1.0 = {
-            junit = 4.12;
+            JUnit5 = 5.x;
             Mockito = 3.x;
         };
     };

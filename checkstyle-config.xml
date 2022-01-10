@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE module PUBLIC
-    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <!--
   This is a small checkstyle ruleset to get you started.
@@ -11,6 +11,12 @@
 -->
 <module name="Checker">
   <property name="basedir" value="${basedir}"/>
+
+  <!-- Caps line length -->
+  <module name="LineLength">
+    <property name="max" value="140"/>
+    <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+  </module>
 
   <!-- Spaces instead of tabs -->
   <module name="FileTabCharacter"/>
@@ -41,11 +47,6 @@
     </module>
     <!-- Checks for assignments in subexpressions, such as in String s = Integer.toString(i = 2);.-->
     <module name="InnerAssignment"/>
-    <!-- Caps line length -->
-    <module name="LineLength">
-      <property name="max" value="140"/>
-      <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-    </module>
     <!-- Name local variables according to standard Java conventions -->
     <module name="LocalVariableName">
       <property name="allowOneCharVarInForLoop" value="true"/>
