@@ -13,6 +13,11 @@
         <AmazonRollingRandomAccessFile name="WIRE"
             filePattern="${log-path}/wire.log.%d{yyyy-MM-dd-HH}" >
         </AmazonRollingRandomAccessFile>
+        <AmazonRollingRandomAccessFile name="REQUESTLOG" filePattern="${log-path}/request.log.%d{yyyy-MM-dd-HH}" >
+            <PatternLayout>
+                <pattern>%m{nolookups}%n</pattern>
+            </PatternLayout>
+        </AmazonRollingRandomAccessFile>
     </Appenders>
 
     <Loggers>
@@ -24,6 +29,9 @@
          -->
         <Logger name="WIRE" level="TRACE" additivity="false">
             <appender-ref ref="WIRE" level="TRACE"/>
+        </Logger>
+        <Logger name="com.amazon.coral.service.RequestLoggingInterceptor" level="TRACE" additivity="false">
+            <AppenderRef ref="REQUESTLOG" level="TRACE"/>
         </Logger>
         <Logger name="com.amazon.coral" level="WARN"/>
         <Logger name="com.amazon.coral.reflect" level="ERROR"/>
