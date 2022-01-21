@@ -55,6 +55,9 @@ check.dependsOn jacocoTestCoverageVerification
 jacocoTestCoverageVerification {
     violationRules {
         rule {
+            excludes = [
+                    '*.dagger.*'
+            ]
             limit {
                 minimum = 0.00 // TODO: We should change this once we have unit tests
             }
@@ -65,10 +68,13 @@ jacocoTestCoverageVerification {
 dependencies {
     def coralGenerator = brazilGradle.tool('CoralGenerator')
     def coralService = brazilGradle.build('CoralService')
+    def coralDagger =  brazilGradle.tool('AmazonCoralDaggerSupportBuildTool')
     annotationProcessor coralGenerator
     annotationProcessor coralService
     testAnnotationProcessor coralGenerator
     testAnnotationProcessor coralService
+    annotationProcessor coralDagger
+    compileOnly coralDagger
 
     // Add runtime dependencies to runtime classpath for server task
     runtimeOnly brazilGradle.run() - brazilGradle.build()
@@ -93,6 +99,13 @@ compileJava {
     File generatedSourceDir = file("${brazilGradle.buildDir}/private/generated/src/main")
     options.annotationProcessorGeneratedSourcesDirectory = generatedSourceDir
     outputs.dir(generatedSourceDir)
+}
+
+// This is needed to resolve a classPath issue with Bobcat3 and Dagger
+configurations {
+    implementation {
+        exclude group: 'javax.annotation', module: 'jsr250-api'
+    }
 }
 
 def configurationFiles = copySpec {
@@ -129,7 +142,7 @@ def httpsPort = '8001'
 */
 def apolloScript = tasks.register('apolloScript', com.amazon.brazil.gradle.launcher.GenerateWrapperTask) {
     target "$brazilGradle.buildDir/bin/run-service.sh"
-    main 'com.amazonaws.ebsblacksmithservice.EbsBlacksmithService'
+    main 'com.amazonaws.ebsblacksmithservice.dagger.GeneratedCoralLauncher'
 
     jvmArgs '-ea'
     jvmArgs '-XX:+UseG1GC'
@@ -171,7 +184,7 @@ def apolloScript = tasks.register('apolloScript', com.amazon.brazil.gradle.launc
 def server = tasks.register('server', JavaExec) {
     dependsOn copyConfigurationToBuildPrivate
     classpath sourceSets.main.runtimeClasspath
-    main 'com.amazonaws.ebsblacksmithservice.EbsBlacksmithService'
+    main 'com.amazonaws.ebsblacksmithservice.dagger.GeneratedCoralLauncher'
 
     /*
      Set to true to enable remote debugging  on port 5005 of your `bb server`.
@@ -190,6 +203,19 @@ def server = tasks.register('server', JavaExec) {
     systemProperty 'apollo.OCF.HttpServer.httpRegularPort', "${httpPort}"
     systemProperty 'apollo.OCF.HttpServer.httpSecurePort', "${httpsPort}"
     systemProperty 'java.io.tmpdir', "${brazilGradle.buildDir}/private/var/tmp"
+
+    /*
+     Below properties are required by AmazonCoralDaggerSupportBuildTool
+     They will be used in 'brazil-build server' for simulate Apollo environment
+     see https://code.amazon.com/packages/AmazonCoralDaggerSupportBuildTool/blobs/mainline/--/README.md
+    */
+    systemProperty 'apollo.environment.environmentFullName', "EbsBlacksmithService"
+    systemProperty 'apollo.environment.environmentAlias', "EbsBlacksmithService"
+    systemProperty 'apollo.environment.stage', "Alpha"
+    systemProperty 'apollo.OCF.AppConfig.app', "EbsBlacksmithService"
+    systemProperty 'apollo.OCF.AppConfig.appgroup', "EbsBlacksmithService"
+    systemProperty 'apollo.OCF.PubSub.domain', "desktop"
+    systemProperty 'apollo.OCF.PubSub.realm', "IAD7"
 
     /*
      For local testing only: disable AAA authorization (a manual kill switch; see CoralModule.java). Remove

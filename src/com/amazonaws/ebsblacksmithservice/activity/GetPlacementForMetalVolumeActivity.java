@@ -8,8 +8,14 @@ import com.amazon.coral.validate.Validated;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeRequest;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeResponse;
 
+import javax.inject.Inject;
+
 @Service("EbsBlacksmithService")
 public class GetPlacementForMetalVolumeActivity extends Activity {
+
+    @Inject
+    public GetPlacementForMetalVolumeActivity() {
+    }
 
     @Operation("GetPlacementForMetalVolume")
     @Validated
