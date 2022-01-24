@@ -10,6 +10,9 @@ import com.amazon.coral.dagger.config.WorkspaceServiceEnvironment;
 import com.amazon.coral.metrics.MetricsFactory;
 import com.amazon.coral.service.EnvironmentChecker;
 import com.amazonaws.ebsblacksmithservice.types.Domain;
+import com.amazonaws.rip.RIPHelper;
+import com.amazonaws.rip.models.IRIPHelper;
+import com.amazonaws.rip.models.region.IRegion;
 import dagger.Module;
 import dagger.Provides;
 import org.slf4j.Logger;
@@ -25,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Module
+@Module()
 public class EnvironmentModule {
 
-    private static final String APP_NAME = "EbsBlacksmithService";
+    public static final String APP_NAME = "EbsBlacksmithService";
     private static final Logger log = LoggerFactory.getLogger(CoralModule.class);
 
     @Provides
@@ -63,6 +66,13 @@ public class EnvironmentModule {
     @Named("httpPort")
     static int getHttpRegularPortFromOpConfigOrDefault() {
         return getHttpPortFromOpConfigOrDefault("httpRegularPort", 8080);
+    }
+
+    @Provides
+    @Singleton
+    @Named("Region")
+    static IRegion provideRegion(IRIPHelper ripHelper, @Named("Realm") Realm realm) {
+        return ripHelper.region(realm.name());
     }
 
     @Provides
@@ -107,6 +117,12 @@ public class EnvironmentModule {
             log.warn("Could not get ApolloEnvironmentInfo.", e);
             return Optional.empty();
         }
+    }
+
+    @Provides
+    @Singleton
+    static IRIPHelper provideRipHelper() {
+        return RIPHelper.local();
     }
 
     /*

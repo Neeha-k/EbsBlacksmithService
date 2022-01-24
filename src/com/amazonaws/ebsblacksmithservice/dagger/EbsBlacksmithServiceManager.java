@@ -4,13 +4,14 @@ import com.amazon.ebs.dfdd.DfddHeartbeatHelper;
 import com.amazon.coral.bobcat.BobcatServer;
 import com.amazon.coral.dagger.service.ServiceManager;
 import com.amazon.coral.service.EnvironmentChecker;
+import com.google.common.collect.ImmutableList;
 import dagger.Binds;
 import dagger.Lazy;
 import dagger.Module;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 @Singleton
 public class EbsBlacksmithServiceManager implements ServiceManager {
@@ -21,36 +22,39 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
     }
 
     private final Lazy<EnvironmentChecker> lazyEnvironmentChecker;
-    private final BobcatServer bobcatServer;
     private final DfddHeartbeatHelper insecureDfddHeartbeatHelper;
     private final DfddHeartbeatHelper secureDfddHeartbeatHelper;
+    private final EndpointManager endpointManager;
 
     @Inject
     EbsBlacksmithServiceManager(
             Lazy<EnvironmentChecker> lazyEnvironmentChecker,
-            BobcatServer bobcatServer,
+            @Named("InsecureBobcat") BobcatServer insecureBobcatServer,
+            @Named("SecureBobcat") BobcatServer secureBobcatServer,
             @Named("DfddHeartbeatHelperRegular") DfddHeartbeatHelper insecureDfddHeartbeatHelper,
             @Named("DfddHeartbeatHelperSecure") DfddHeartbeatHelper secureDfddHeartbeatHelper
     ) {
         super();
         this.lazyEnvironmentChecker = lazyEnvironmentChecker;
-        this.bobcatServer = bobcatServer;
         this.insecureDfddHeartbeatHelper = insecureDfddHeartbeatHelper;
         this.secureDfddHeartbeatHelper = secureDfddHeartbeatHelper;
+
+        // SecureBobcatServer intentionally left off this list until we have onboard with ARPS
+        this.endpointManager = new EndpointManager(ImmutableList.of(insecureBobcatServer));
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
     }
 
     @Override
-    public void verify() throws Exception {
+    public void verify() {
         lazyEnvironmentChecker.get();
     }
 
     @Override
     public void start() throws Exception {
-        bobcatServer.start();
+        endpointManager.start();
         insecureDfddHeartbeatHelper.startHeartbeating();
         secureDfddHeartbeatHelper.startHeartbeating();
     }
@@ -59,6 +63,6 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
     public void stop() throws Exception {
         insecureDfddHeartbeatHelper.stopHeartbeating();
         secureDfddHeartbeatHelper.stopHeartbeating();
-        bobcatServer.shutdown();
+        endpointManager.shutdown();
     }
 }
