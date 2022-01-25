@@ -41,7 +41,7 @@ package.EbsBlacksmithService = {
             CoralService = 1.1;
             GoogleGuava = 30.x;
             Slf4j = 1.7;
-
+            EbsDfddCommon = 1.0;
             # These support the different protocols
             # declared in CoralModule.java
             CoralRpcSupport = 1.1;
@@ -71,9 +71,13 @@ package.EbsBlacksmithService = {
     resolves-conflict-dependencies = {
         1.0 = {
             GoogleGuava = 30.x;
+            GetHostnameJava = 1.2;
+            AmazonApolloEnvironmentInfoJava = 1.2;
+            AmazonAppConfigJava = 2.0;
+            J2ee_servlet = 4.x;
         };
     };
-
+    
     targets = {
         EbsBlacksmithService-1.0 = { 
             type = javalibrary;
