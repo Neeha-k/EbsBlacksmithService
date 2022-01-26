@@ -24,14 +24,14 @@ public class MetricsModule {
     @Provides
     @Singleton
     static MetricsFactory provideMetricsFactory(ServiceEnvironment environment, AppConfigTree appConfig,
-                                                @Named("Domain") Domain domain, @Named("Realm") Realm realm) {
+                                                @Named("subZone") String subZone) {
         QuerylogHelper querylogHelper = new QuerylogHelper();
         querylogHelper.setFilename(environment.getEnvironmentRoot() + "/var/output/logs/service_log");
 
         SensingMetricsHelper metricsHelper = new SensingMetricsHelper();
         metricsHelper.setReporters(ImmutableList.of(querylogHelper));
         metricsHelper.setProgram(appConfig.getApplicationName());
-        metricsHelper.setMarketplace(String.format("EbsBlacksmithService:%s:%s", domain, realm));
+        metricsHelper.setMarketplace(subZone);
         return metricsHelper;
     }
 }

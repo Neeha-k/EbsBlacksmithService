@@ -216,6 +216,7 @@ def server = tasks.register('server', JavaExec) {
     systemProperty 'apollo.OCF.AppConfig.appgroup', "EbsBlacksmithService"
     systemProperty 'apollo.OCF.PubSub.domain', "desktop"
     systemProperty 'apollo.OCF.PubSub.realm', "IAD7"
+    systemProperty 'apollo.OCF.EBSZoneAndRegion.EBSZoneAndRegion.subzone', "IAD7"
 
     /*
      For local testing only: disable AAA authorization (a manual kill switch; see CoralModule.java). Remove

@@ -82,6 +82,13 @@ public class EnvironmentModule {
         return getHttpPortFromOpConfigOrDefault("httpSecurePort", 8443);
     }
 
+    @Provides
+    @Singleton
+    @Named("subZone")
+    static String getSubZone(ServiceEnvironment serviceEnvironment) {
+        return serviceEnvironment.getString("EBSZoneAndRegion", "EBSZoneAndRegion.subzone");
+    }
+
     private static int getHttpPortFromOpConfigOrDefault(String portName, int defaultPort) {
         Optional<Integer> apolloEnvironmentInfoPort =
                 getApolloEnvironmentInfo()
