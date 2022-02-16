@@ -1,0 +1,10 @@
+[
+  {
+    "ipAddress": "127.0.1.0",
+    "availableDisks": 0
+  },
+  {
+    "ipAddress": "127.0.1.1",
+    "availableDisks": 1
+  }
+]

@@ -82,6 +82,13 @@ dependencies {
     runtimeOnly brazilGradle.run()
     implementation brazilGradle.build()
     testImplementation brazilGradle.testbuild()
+
+    // Lombok build tool
+    compileOnly brazilGradle.tool('Lombok')
+    // If you need Lombok in unit tests
+    testCompileOnly brazilGradle.tool('Lombok')
+    annotationProcessor brazilGradle.tool('Lombok')
+    testAnnotationProcessor brazilGradle.tool('Lombok')
 }
 
 spotbugs {

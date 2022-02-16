@@ -8,6 +8,7 @@ import com.amazonaws.ebsblacksmithservice.dagger.modules.DfddModule;
 import com.amazonaws.ebsblacksmithservice.dagger.modules.CredentialsModule;
 import com.amazonaws.ebsblacksmithservice.dagger.modules.EnvironmentModule;
 import com.amazonaws.ebsblacksmithservice.dagger.modules.MetricsModule;
+import com.amazonaws.ebsblacksmithservice.dagger.modules.PlacementModule;
 
 import javax.inject.Singleton;
 
@@ -20,6 +21,7 @@ import javax.inject.Singleton;
                 AuthModule.class,
                 CoralModule.class,
                 DfddModule.class,
+                PlacementModule.class,
                 ActivityHandlerModule.class,
         }
 )

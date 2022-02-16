@@ -1,0 +1,26 @@
+[
+  {
+    "ipAddress": "127.0.1.0",
+    "availableDisks": 1
+  },
+  {
+    "ipAddress": "127.0.1.1",
+    "availableDisks": 22
+  },
+  {
+    "ipAddress": "127.0.1.2",
+    "availableDisks": 5
+  },
+  {
+    "ipAddress": "127.0.1.3",
+    "availableDisks": 18
+  },
+  {
+    "ipAddress": "127.0.1.4",
+    "availableDisks": 22
+  },
+  {
+    "ipAddress": "127.0.1.5",
+    "availableDisks": 0
+  }
+]
