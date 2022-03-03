@@ -125,9 +125,13 @@ def configurationFiles = copySpec {
 }
 
 def copyConfigurationToBuild = tasks.register('copyConfigurationToBuild', Copy) {
+    from("${brazilGradle.path('package-src-root')}") {
+        include 'MockPlacementData.json'
+    }
     into "${brazilGradle.buildDir}"
     with configurationFiles
 }
+
 
 def copyConfigurationToBuildPrivate = tasks.register('copyConfigurationToBuildPrivate', Copy) {
     from(brazilGradle.path('run.configfarm.brazil-config')) {
@@ -135,6 +139,9 @@ def copyConfigurationToBuildPrivate = tasks.register('copyConfigurationToBuildPr
     }
     from(brazilGradle.path('run.configfarm.certs')) {
         include 'certs/**/*'
+    }
+    from("${brazilGradle.path('package-src-root')}") {
+        include 'MockPlacementData.json'
     }
     into "${brazilGradle.buildDir}/private"
     with configurationFiles
