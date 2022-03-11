@@ -51,6 +51,9 @@ package.EbsBlacksmithService = {
             EbsAuthHelpers = 1.0;
             RIPDataAllJavaResources = 1.0;
             RIPJavaHelper = 2.0;
+            #Turtle dependencies
+            EbsTurtleJavaRuntimeSupport = 2.0;
+
         };
     };
 
@@ -64,6 +67,8 @@ package.EbsBlacksmithService = {
             MonitoringCore = 1.0;
             ServiceMonitoring = 2.0;
             WebsiteLogPusher = 3.6;
+            #Turtle Dependencies
+            EbsTurtleConfigUtils = 1.0;
         };
     };
 
@@ -81,18 +86,19 @@ package.EbsBlacksmithService = {
             AmazonApolloEnvironmentInfoJava = 1.2;
             AmazonAppConfigJava = 2.0;
             J2ee_servlet = 4.x;
-            Jackson-annotations = 2.12.x;
-            Jackson-core = 2.12.x;
             Jackson-databind = 2.12.x;
             Jackson-dataformat-cbor = 2.12.x;
             JakartaCommons-cli = 1.2;
+            JNA = 5.x;
+            Json-org-java = 2.3;
+            log4j = 2.14;
         };
     };
 
     remove-dependencies = {
         1.0 = {
             # FindBugsAnnotations is used by RIPJavaHelper-2.0, but we already use spotbugs-annotations-4.1.4
-            FindBugsAnnotations = 2.0.3;
+            FindBugsAnnotations = 3.x;
         };
     };
     
