@@ -52,7 +52,7 @@ public class CoralModule {
 
     private static final String AWS_DEFAULT_TLS_POLICY = "aws.default";
     private static final String LOOPBACK_DEVICE = "127.0.0.1";
-    private static final String DEFAULT_ADDRESS = "0.0.0.0";
+    private static final String OPEN_ADDRESS = "0.0.0.0";
 
     private static final Logger log = LoggerFactory.getLogger(CoralModule.class);
 
@@ -66,12 +66,14 @@ public class CoralModule {
         var coralOrchestrator = getCoralOrchestrator(activityHandler, null);
         var endpointConfig = getDefaultBobcat3EndpointConfig(coralOrchestrator, metricsFactory);
         String address;
-        if (Domain.isSecureDomain(domain)) {
-            // For secure domains, we don't want to expose an insecure endpoint to the outside world,
-            // so we map it to the loopback device
-            address = LOOPBACK_DEVICE;
+        if (!Domain.isSecureDomain(domain)) {
+            address = OPEN_ADDRESS;
         } else {
-            address = DEFAULT_ADDRESS;
+            // For secure domains, we don't want to expose an insecure endpoint to the outside world,
+            // so we map it to the loopback device.
+            // For safety, the default behavior is the loopback device because exposing something insecure
+            // should be explicitly opt-in.
+            address = LOOPBACK_DEVICE;
         }
 
         endpointConfig.setEndpoints(List.of(
