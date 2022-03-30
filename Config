@@ -44,6 +44,7 @@ package.EbsBlacksmithService = {
             Slf4j = 1.7;
             Lombok = 1.18.x;
             EbsDfddCommon = 1.0;
+            EbsBlacksmithServiceFirewall = 1.0;
             # These support the different protocols
             # declared in CoralModule.java
             CoralRpcSupport = 1.1;
