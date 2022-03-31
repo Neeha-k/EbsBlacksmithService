@@ -4,6 +4,18 @@ import amazon.platform.config.AppConfig;
 import amazon.platform.config.AppConfigTree;
 import amazon.platform.config.Realm;
 import amazon.platform.tools.ApolloEnvironmentInfo;
+import amazon.platform.tools.ApolloEnvironmentInfo.EnvironmentRootUndefinedException;
+import dagger.Module;
+import dagger.Provides;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.amazon.coral.dagger.config.ApolloServiceEnvironment;
 import com.amazon.coral.dagger.config.ServiceEnvironment;
 import com.amazon.coral.dagger.config.WorkspaceServiceEnvironment;
@@ -13,20 +25,9 @@ import com.amazonaws.ebsblacksmithservice.types.Domain;
 import com.amazonaws.rip.RIPHelper;
 import com.amazonaws.rip.models.IRIPHelper;
 import com.amazonaws.rip.models.region.IRegion;
-import dagger.Module;
-import dagger.Provides;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import amazon.platform.tools.ApolloEnvironmentInfo;
-import amazon.platform.tools.ApolloEnvironmentInfo.EnvironmentRootUndefinedException;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Module()
 public class EnvironmentModule {
@@ -87,6 +88,13 @@ public class EnvironmentModule {
     @Named("subZone")
     static String getSubZone(ServiceEnvironment serviceEnvironment) {
         return serviceEnvironment.getString("EBSZoneAndRegion", "EBSZoneAndRegion.subzone");
+    }
+
+    @Provides
+    @Singleton
+    @Named("IsIdm")
+    public static Boolean isIdm(@Named("Domain") Domain domain) {
+        return domain.toString().toLowerCase().equals("ec2");
     }
 
     private static int getHttpPortFromOpConfigOrDefault(String portName, int defaultPort) {

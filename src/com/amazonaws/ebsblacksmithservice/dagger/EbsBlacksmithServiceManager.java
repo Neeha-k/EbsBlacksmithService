@@ -1,10 +1,5 @@
 package com.amazonaws.ebsblacksmithservice.dagger;
 
-import com.amazon.ebs.dfdd.DfddHeartbeatHelper;
-import com.amazon.coral.bobcat.BobcatServer;
-import com.amazon.coral.dagger.service.ServiceManager;
-import com.amazon.coral.service.EnvironmentChecker;
-import com.google.common.collect.ImmutableList;
 import dagger.Binds;
 import dagger.Lazy;
 import dagger.Module;
@@ -12,6 +7,12 @@ import dagger.Module;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import com.amazon.coral.bobcat.BobcatServer;
+import com.amazon.coral.dagger.service.ServiceManager;
+import com.amazon.coral.service.EnvironmentChecker;
+import com.amazon.ebs.dfdd.DfddHeartbeatHelper;
+import com.google.common.collect.ImmutableList;
 
 @Singleton
 public class EbsBlacksmithServiceManager implements ServiceManager {
@@ -39,8 +40,7 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
         this.insecureDfddHeartbeatHelper = insecureDfddHeartbeatHelper;
         this.secureDfddHeartbeatHelper = secureDfddHeartbeatHelper;
 
-        // SecureBobcatServer intentionally left off this list until we have onboard with ARPS
-        this.endpointManager = new EndpointManager(ImmutableList.of(insecureBobcatServer));
+        this.endpointManager = new EndpointManager(ImmutableList.of(secureBobcatServer, insecureBobcatServer));
     }
 
     @Override

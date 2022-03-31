@@ -1,19 +1,22 @@
 package com.amazonaws.ebsblacksmithservice.dagger.modules;
 
 import aws.auth.client.error.ARCClientException;
-import com.amazon.coral.security.Authority;
-import com.amazon.coral.service.helper.ChainHelper;
-import com.amazon.ebs.auth.handlers.AuthChainHelperFactory;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.ebsblacksmithservice.auth.AuthorizationList;
-import com.amazonaws.ebsblacksmithservice.types.Domain;
-import com.amazonaws.rip.models.region.IRegion;
 import dagger.Module;
 import dagger.Provides;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.credentials.adapter.V1V2AwsCredentialProviderAdapter;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+
 import java.util.Map;
+
+import com.amazon.coral.security.Authority;
+import com.amazon.coral.service.helper.ChainHelper;
+import com.amazon.ebs.auth.handlers.AuthChainHelperFactory;
+import com.amazonaws.ebsblacksmithservice.auth.AuthorizationList;
+import com.amazonaws.ebsblacksmithservice.types.Domain;
+import com.amazonaws.rip.models.region.IRegion;
 
 @Module(
         includes = {
@@ -22,14 +25,13 @@ import java.util.Map;
         }
 )
 public class AuthModule {
-    // Once we officially onboard with ARPS, we will add the vendor code here
-    private static final String VENDOR_CODE = "";
+    private static final String VENDOR_CODE = "ebs-blacksmith-service";
     private static final String ARPS_SERVICE_NAME = VENDOR_CODE;
 
     @Provides
     @Singleton
     @Named("AuthChainHelper")
-    static ChainHelper provideAuthChainHelper(AWSCredentialsProvider arpsCreds,
+    static ChainHelper provideAuthChainHelper(@Named("ARPSCredentials") AwsCredentialsProvider arpsCredentialsProvider,
                                    Map<String, Authority> operationAuthorities,
                                    @Named("Region") IRegion region) {
         // Qualifier should always be prod.<region-name>
@@ -42,7 +44,7 @@ public class AuthModule {
                     ARPS_SERVICE_NAME,
                     qualifier,
                     region.regionName(),
-                    arpsCreds,
+                    V1V2AwsCredentialProviderAdapter.adapt(arpsCredentialsProvider),
                     operationAuthorities
             );
         } catch (ARCClientException e) {
