@@ -27,6 +27,7 @@ package.EbsBlacksmithService = {
             JDK11 = 1.0;
             Lombok = 1.18.x;
             EbsBlacksmithServiceModel = 1.0;
+            RIPConfigBuilder = 2.0;
         };
     };
 

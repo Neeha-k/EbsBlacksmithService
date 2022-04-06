@@ -253,6 +253,40 @@ def server = tasks.register('server', JavaExec) {
     args "--realm=us-west-2"
 }
 
+// Generate configuration files via RIPConfigBuilder
+def ripConfigBuilderPackage = 'RIPConfigBuilder-2.0'
+if (!brazilGradle.path("[RIPConfigBuilder]pkg.configfarm.bin").contains("[${ripConfigBuilderPackage}]")) {
+    throw new AssertionError("Expected to depend on ${ripConfigBuilderPackage}")
+}
+
+def generateOpConfig = tasks.register('generateOpConfig', Exec) {
+    def brazilBootstrapPath = "which brazil-bootstrap".execute().text.trim()
+    if (!brazilBootstrapPath) {
+        brazilBootstrapPath = '/apollo/env/SDETools/bin/brazil-bootstrap'
+    }
+    def brazilBootstrap = file(brazilBootstrapPath)
+    def ripConfigBuilderRoot = new ByteArrayOutputStream()
+    exec {
+        commandLine brazilBootstrap.toString(),
+                '-p', ripConfigBuilderPackage
+        standardOutput = ripConfigBuilderRoot
+    }
+
+    workingDir brazilGradle.buildDir
+    //
+    commandLine "${ripConfigBuilderRoot.toString().trim()}/bin/generate_configs.rb",
+            '--template_dir', "${project.projectDir}/configuration/template",
+            '--output_dir', "${project.projectDir}/configuration"
+}
+
+tasks.named("copyConfigurationToBuild").configure {
+    dependsOn generateOpConfig
+}
+
+tasks.named("copyConfigurationToBuildPrivate").configure {
+    dependsOn generateOpConfig
+}
+
 tasks.named("build").configure {
-    dependsOn copyConfigurationToBuild, apolloScript
+    dependsOn generateOpConfig, copyConfigurationToBuild, apolloScript
 }
