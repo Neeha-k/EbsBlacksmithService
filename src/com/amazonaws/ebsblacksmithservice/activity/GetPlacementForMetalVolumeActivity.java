@@ -27,9 +27,12 @@ public class GetPlacementForMetalVolumeActivity extends Activity {
     // For now we can hardcode the recommendation response size to simplify our external facing API.
     // In the future, we will want to tune the number of responses returned by blacksmith based upon our
     // confidence of one of them being successful
-    private static final int RESPONSE_SIZE = 1;
+    // We want to pick a number larger than the number of disks we will have.
+    private static final int RESPONSE_SIZE = 1600;
 
     private static final String RECOMMENDATIONS_MISSING = "RecommendationsMissing";
+    private static final String RECOMMENDATIONS_ACTUAL = "RecommendationsActual";
+    private static final String RECOMMENDATIONS_MAX = "RecommendationsMax";
 
     @Operation("GetPlacementForMetalVolume")
     @Validated
@@ -46,6 +49,8 @@ public class GetPlacementForMetalVolumeActivity extends Activity {
         if (servers.size() < RESPONSE_SIZE) {
             metrics.addCount(RECOMMENDATIONS_MISSING, RESPONSE_SIZE - servers.size(), Unit.ONE);
         }
+        metrics.addCount(RECOMMENDATIONS_ACTUAL, servers.size(), Unit.ONE);
+        metrics.addCount(RECOMMENDATIONS_MAX, RESPONSE_SIZE, Unit.ONE);
 
         return GetPlacementForMetalVolumeResponse.builder()
                 .withMetalServerRecommendations(MetalServerInternal.toCoralModel(servers))
