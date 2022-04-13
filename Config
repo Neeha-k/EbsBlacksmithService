@@ -53,7 +53,7 @@ package.EbsBlacksmithService = {
             EbsAuthHelpers = 1.0;
             RIPDataAllJavaResources = 1.0;
             RIPJavaHelper = 2.0;
-            #Turtle dependencies
+            # Turtle dependencies
             EbsTurtleJavaRuntimeSupport = 2.0;
 
             # We need this adapter to transfer SDK 2 AwsCredentialProvider to SDK 1 version
@@ -72,8 +72,10 @@ package.EbsBlacksmithService = {
             MonitoringCore = 1.0;
             ServiceMonitoring = 2.0;
             WebsiteLogPusher = 3.6;
-            #Turtle Dependencies
+            # Turtle Dependencies
             EbsTurtleConfigUtils = 1.0;
+            # Publishing TurtleCredentialsValidity metrics
+            TurtleCredentialsMonitorCron = 1.0;
         };
     };
 
