@@ -66,6 +66,7 @@ package.EbsBlacksmithService = {
         1.0 = {
             AmazonCACerts = 1.0;
             CacheOut = 1.0;
+            EC2CACerts = 1.0;
             JDK11 = 1.0;
             log4j = 2.14;
             MinimalProcessManager = 3.0;

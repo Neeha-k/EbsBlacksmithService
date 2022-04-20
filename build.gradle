@@ -167,7 +167,8 @@ def apolloScript = tasks.register('apolloScript', com.amazon.brazil.gradle.launc
 
     environment 'CORAL_CONFIG_PATH', '${ENVROOT}/coral-config', false
 
-    systemProperty 'javax.net.ssl.trustStore', 'certs/InternalAndExternalTrustStore.jks'
+    // Setup trust store for SSL certs according to https://w.amazon.com/index.php/EC2/Security/PKI/Onboarding#Using_EC2CACerts
+    systemProperty 'javax.net.ssl.trustStore', '${ENVROOT}/certs/ec2/InternalAndExternalTrustStore.jks', false
     systemProperty 'javax.net.ssl.trustStorePassword', 'amazon'
 
     /*
