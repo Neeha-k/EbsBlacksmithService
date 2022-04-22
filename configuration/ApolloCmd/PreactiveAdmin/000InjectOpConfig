@@ -1,0 +1,33 @@
+#!/apollo/bin/env "${APOLLO_ACTUAL_ENVIRONMENT_ROOT}/bin/ruby"
+require 'amazon/config'
+require 'apollo/opconfig_helpers/pub_sub/setup'
+require 'apollo/opconfig_injector_script'
+require 'amazon/rip/rip_helper'
+
+if ARGV[0] == 'ec2'
+    # Check for an IDM override, which is specified by passing "ec2" to the script (e.g. running "000InjectOpConfig ec2")
+    domain = 'ec2'
+    realm = 'us-east-1'
+else
+    # Get current environment
+    env_info = Amazon::Apollo::EnvironmentInfo.new
+
+    # Get domain value and realm value based on current environment
+    env_name_path = env_info.environment_full_name.split("/")
+
+    domain = env_info.environment_stage_name.downcase
+    realm = rip_helper.determine_region.region_name.downcase
+end
+
+# Set new config
+override = 'OpConfigInjector.cfg'
+app_config_options = {
+    :domain => domain,
+    :realm => realm,
+    :override => override,
+}
+
+# Call OpConfigInjector to inject new config
+puts "000InjectOpConfig using options #{app_config_options}"
+app_config = Amazon::Config::AppConfig.new(app_config_options)
+Apollo::OpConfigInjectorScript.new({:app_config => app_config}).call

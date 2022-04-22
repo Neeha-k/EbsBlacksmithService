@@ -77,6 +77,9 @@ package.EbsBlacksmithService = {
             EbsTurtleConfigUtils = 1.0;
             # Publishing TurtleCredentialsValidity metrics
             TurtleCredentialsMonitorCron = 1.0;
+            #OpConfigInjector Setup
+            Ruby = default;
+            OpConfigInjector = 1.0;
         };
     };
 
