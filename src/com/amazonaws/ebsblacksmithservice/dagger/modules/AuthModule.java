@@ -54,7 +54,10 @@ public class AuthModule {
 
     @Provides
     @Singleton
-    static Map<String, Authority> provideOperationAuthorities(@Named("Domain") Domain domain) {
-        return AuthorizationList.getApiToAuthority(domain);
+    static Map<String, Authority> provideOperationAuthorities(
+            @Named("Domain") Domain domain,
+            @Named("subZone") String zone,
+            @Named("Region") IRegion region) {
+        return AuthorizationList.getApiToAuthority(domain, zone, region);
     }
 }
