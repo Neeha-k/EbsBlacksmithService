@@ -1,6 +1,5 @@
-package auth;
+package com.amazonaws.ebsblacksmithservice.auth;
 
-import com.amazonaws.ebsblacksmithservice.auth.AuthorizationList;
 import com.amazonaws.ebsblacksmithservice.types.Domain;
 import com.amazonaws.rip.RIPHelper;
 import com.amazonaws.rip.models.IRIPHelper;

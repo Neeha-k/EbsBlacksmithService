@@ -4,6 +4,7 @@ import com.amazon.ebs.auth.helpers.AuthWhitelistHelper;
 import com.amazonaws.ebsblacksmithservice.dagger.modules.EnvironmentModule;
 import com.amazonaws.ebsblacksmithservice.types.Domain;
 import com.amazonaws.rip.models.region.IRegion;
+import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +76,8 @@ public class AuthorizationList {
         );
     }
 
-    public static void authorize(Map<String, List<String>> authorizationMap,
+    @VisibleForTesting
+    protected static void authorize(Map<String, List<String>> authorizationMap,
                                   String operation, String servicePrincipal) {
         if (authorizationMap.containsKey(servicePrincipal)) {
             authorizationMap.get(servicePrincipal).add(operation);
