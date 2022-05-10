@@ -41,6 +41,7 @@ package.EbsBlacksmithService = {
             CoralMetricsQuerylogReporter = 1.1;
             CoralOrchestrator = 1.1;
             CoralService = 1.1;
+            EbsMetalServerJavaClient = 1.0;
             GoogleGuava = 30.x;
             Slf4j = 1.7;
             Lombok = 1.18.x;
@@ -103,6 +104,7 @@ package.EbsBlacksmithService = {
             JNA = 5.x;
             Json-org-java = 2.3;
             log4j = 2.14;
+            Maven-org-checkerframework_checker-qual = 3.x;
         };
     };
 
@@ -110,6 +112,12 @@ package.EbsBlacksmithService = {
         1.0 = {
             # FindBugsAnnotations is used by RIPJavaHelper-2.0, but we already use spotbugs-annotations-4.1.4
             FindBugsAnnotations = 3.x;
+            AOPAlliance = 1.0;
+            junit = 4.4;
+            logback-classic = 1.2.x;
+            logback-classic = 1.2.10;
+            LogbackCore = 1.1.x;
+            LogbackClassic = 1.1.x;
         };
     };
     
