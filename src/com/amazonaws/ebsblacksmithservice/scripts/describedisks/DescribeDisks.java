@@ -1,5 +1,6 @@
 package com.amazonaws.ebsblacksmithservice.scripts.describedisks;
 
+import com.amazon.coral.metrics.NullMetricsFactory;
 import com.amazon.ec2.gts.DeviceUsage;
 import com.amazon.ec2.gunpowder.GunpowderClient;
 import com.amazon.ec2.gunpowder.GunpowderClientConfiguration;
@@ -40,7 +41,7 @@ public class DescribeDisks {
 
         GunpowderClientConfig gunpowderClientConfig = getGunpowderClientConfig(awsCredentialsProvider);
 
-        GunpowderClient gunpowderClient = new GunpowderClientFactory().getGunpowderClient(gunpowderClientConfig);
+        GunpowderClient gunpowderClient = new GunpowderClientFactory(new NullMetricsFactory()).getGunpowderClient(gunpowderClientConfig);
 
         EbsMetalServerClient client = new EbsMetalServerClientBuilder()
             .withCoapRequestSender(new MetalServerRequestSender(gunpowderClient, true))
