@@ -8,8 +8,7 @@ public enum Domain {
     GAMMA,
     PROD;
 
-    // TODO: We should add IDM to SECURE_DOMAINS when we are ready to fully support secure endpoints
-    private static final ImmutableList<Domain> SECURE_DOMAINS = ImmutableList.of(GAMMA, PROD);
+    private static final ImmutableList<Domain> SECURE_DOMAINS = ImmutableList.of(EC2, GAMMA, PROD);
 
     public static Domain fromString(String domain) {
         return Domain.valueOf(domain.toUpperCase());
