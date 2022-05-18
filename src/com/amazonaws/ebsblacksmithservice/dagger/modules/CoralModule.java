@@ -76,6 +76,11 @@ public class CoralModule {
             address = LOOPBACK_DEVICE;
         }
 
+        // TODO: Move IDM insecure port back to LOOPBACK after updating integrationTests to use secure endpoint
+        if (EnvironmentModule.isIdm(domain)) {
+            address = OPEN_ADDRESS;
+        }
+
         endpointConfig.setEndpoints(List.of(
                 Bobcat3EndpointConfig.uri(String.format("http://%s:%d", address, httpRegularPort))
         ));
