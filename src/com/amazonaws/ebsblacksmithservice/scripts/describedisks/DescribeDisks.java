@@ -1,5 +1,6 @@
 package com.amazonaws.ebsblacksmithservice.scripts.describedisks;
 
+import com.amazon.coral.metrics.MetricsFactory;
 import com.amazon.coral.metrics.NullMetricsFactory;
 import com.amazon.ec2.gts.DeviceUsage;
 import com.amazon.ec2.gunpowder.GunpowderClient;
@@ -37,8 +38,8 @@ public class DescribeDisks {
         AWSCredentialsProvider awsCredentialsProvider = getAWSCredentialsProvider();
 
         GunpowderClientConfig gunpowderClientConfig = getGunpowderClientConfig(awsCredentialsProvider);
-
-        GunpowderClient gunpowderClient = new GunpowderClientFactory(new NullMetricsFactory()).getGunpowderClient(gunpowderClientConfig);
+        MetricsFactory nullMetricsFactory = new NullMetricsFactory();
+        GunpowderClient gunpowderClient = new GunpowderClientFactory(nullMetricsFactory).getGunpowderClient(gunpowderClientConfig);
 
         EbsMetalServerClient client = new EbsMetalServerClientBuilder()
             .withCoapRequestSender(new MetalServerRequestSender(gunpowderClient, true))
@@ -51,7 +52,8 @@ public class DescribeDisks {
         if (isDryRun(args)) {
             log.info("Dry run enabled, not sending the request");
         } else {
-            DescribeDisksResponse describeDisksResponse = client.newDescribeDisksCall().call(describeDisksRequest, null);
+            DescribeDisksResponse describeDisksResponse = client.newDescribeDisksCall().call(describeDisksRequest,
+                nullMetricsFactory.newMetrics());
             log.info("Received response " + Arrays.toString(describeDisksResponse.getResponse().toArray()));
         }
     }
