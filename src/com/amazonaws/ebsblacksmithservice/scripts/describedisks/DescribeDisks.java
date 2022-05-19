@@ -4,10 +4,7 @@ import com.amazon.coral.metrics.NullMetricsFactory;
 import com.amazon.ec2.gts.DeviceUsage;
 import com.amazon.ec2.gunpowder.GunpowderClient;
 import com.amazon.ec2.gunpowder.GunpowderClientConfiguration;
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.ebs.auth.TurtleAWSCredentialsProvider;
 import com.amazonaws.ebs.metal.client.EbsMetalServerClient;
 import com.amazonaws.ebs.metal.client.EbsMetalServerClientBuilder;
@@ -19,7 +16,7 @@ import com.amazonaws.ebs.metal.client.operations.DescribeDisksRequest;
 import com.amazonaws.ebs.metal.client.operations.DescribeDisksResponse;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.credentials.adapter.V1V2AwsCredentialProviderAdapter;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -86,22 +83,7 @@ public class DescribeDisks {
             .roleName("EbsBlacksmithServiceARPSRole-v0-iad7-gamma")
             .build();
 
-        return new AWSCredentialsProvider() {
-            @Override
-            public AWSCredentials getCredentials() {
-                var creds = awsCredentialsProviderV2.resolveCredentials();
-                if (creds instanceof AwsSessionCredentials) {
-                    return new BasicSessionCredentials(creds.accessKeyId(),
-                        creds.secretAccessKey(),
-                        ((AwsSessionCredentials) creds).sessionToken());
-                }
-                return new BasicAWSCredentials(creds.accessKeyId(), creds.secretAccessKey());
-            }
-
-            @Override
-            public void refresh() {
-            }
-        };
+        return V1V2AwsCredentialProviderAdapter.adapt(awsCredentialsProviderV2);
     }
 
     private static GunpowderClientConfig getGunpowderClientConfig(AWSCredentialsProvider awsCredentialsProvider) {
