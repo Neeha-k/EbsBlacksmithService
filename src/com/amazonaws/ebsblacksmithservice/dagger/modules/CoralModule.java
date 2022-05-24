@@ -1,5 +1,7 @@
 package com.amazonaws.ebsblacksmithservice.dagger.modules;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,8 +16,6 @@ import com.amazon.coral.validate.ValidationInterceptor;
 import com.amazonaws.ebsblacksmithservice.types.Domain;
 import dagger.Module;
 import dagger.Provides;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import amazon.platform.tools.ApolloEnvironmentInfo;
 import amazon.platform.tools.ApolloEnvironmentInfo.EnvironmentRootUndefinedException;
@@ -48,13 +48,12 @@ import javax.inject.Singleton;
                 EnvironmentModule.class
         }
 )
+@Slf4j
 public class CoralModule {
 
     private static final String AWS_DEFAULT_TLS_POLICY = "aws.default";
     private static final String LOOPBACK_DEVICE = "127.0.0.1";
     private static final String OPEN_ADDRESS = "0.0.0.0";
-
-    private static final Logger log = LoggerFactory.getLogger(CoralModule.class);
 
     @Provides
     @Singleton
@@ -74,11 +73,6 @@ public class CoralModule {
             // For safety, the default behavior is the loopback device because exposing something insecure
             // should be explicitly opt-in.
             address = LOOPBACK_DEVICE;
-        }
-
-        // TODO: Move IDM insecure port back to LOOPBACK after updating integrationTests to use secure endpoint
-        if (EnvironmentModule.isIdm(domain)) {
-            address = OPEN_ADDRESS;
         }
 
         endpointConfig.setEndpoints(List.of(

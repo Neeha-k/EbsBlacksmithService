@@ -18,12 +18,10 @@ import com.amazonaws.ebsblacksmithservice.auth.AuthorizationList;
 import com.amazonaws.ebsblacksmithservice.types.Domain;
 import com.amazonaws.rip.models.region.IRegion;
 
-@Module(
-        includes = {
-                CredentialsModule.class,
-                EnvironmentModule.class
-        }
-)
+@Module(includes = {
+        CredentialsModule.class,
+        EnvironmentModule.class
+})
 public class AuthModule {
     private static final String VENDOR_CODE = "ebs-blacksmith-service";
     private static final String ARPS_SERVICE_NAME = VENDOR_CODE;
@@ -32,8 +30,8 @@ public class AuthModule {
     @Singleton
     @Named("AuthChainHelper")
     static ChainHelper provideAuthChainHelper(@Named("ARPSCredentials") AwsCredentialsProvider arpsCredentialsProvider,
-                                   Map<String, Authority> operationAuthorities,
-                                   @Named("Region") IRegion region) {
+            @Named("OperationAuthorities") Map<String, Authority> operationAuthorities,
+            @Named("Region") IRegion region) {
         // Qualifier should always be prod.<region-name>
         // https://w.amazon.com/bin/view/AWSAuth/Integration#HWhichAuthenticationServicedoIuse3F
         String qualifier = "prod." + region.regionName();
@@ -45,8 +43,7 @@ public class AuthModule {
                     qualifier,
                     region.regionName(),
                     V1V2AwsCredentialProviderAdapter.adapt(arpsCredentialsProvider),
-                    operationAuthorities
-            );
+                    operationAuthorities);
         } catch (ARCClientException e) {
             throw new RuntimeException("Problem encountered when constructing the AuthChainHelper", e);
         }
@@ -54,10 +51,12 @@ public class AuthModule {
 
     @Provides
     @Singleton
+    @Named("OperationAuthorities")
     static Map<String, Authority> provideOperationAuthorities(
             @Named("Domain") Domain domain,
             @Named("subZone") String zone,
             @Named("Region") IRegion region) {
+
         return AuthorizationList.getApiToAuthority(domain, zone, region);
     }
 }

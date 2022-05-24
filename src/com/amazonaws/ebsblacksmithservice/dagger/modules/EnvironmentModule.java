@@ -1,5 +1,7 @@
 package com.amazonaws.ebsblacksmithservice.dagger.modules;
 
+import lombok.extern.slf4j.Slf4j;
+
 import amazon.platform.config.AppConfig;
 import amazon.platform.config.AppConfigTree;
 import amazon.platform.config.Realm;
@@ -26,14 +28,11 @@ import com.amazonaws.rip.RIPHelper;
 import com.amazonaws.rip.models.IRIPHelper;
 import com.amazonaws.rip.models.region.IRegion;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Module()
+@Slf4j
 public class EnvironmentModule {
 
     public static final String APP_NAME = "EbsBlacksmithService";
-    private static final Logger log = LoggerFactory.getLogger(CoralModule.class);
 
     @Provides
     @Singleton

@@ -35,7 +35,7 @@ public class AuthorizationListTest {
                 iripHelper.region("iad")
         );
         List<String> gammaServicePrincipalsAllowedApis = new ArrayList<>();
-        gammaServicePrincipalsAllowedApis.add(AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES);
+        gammaServicePrincipalsAllowedApis.add(AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES_API);
         Assertions.assertEquals(gammaServicePrincipalsAllowedApis,
                 AuthorizedServicePrincipalsToApis.get(AuthorizationList.EBS_KAPOW_GAMMA_SERVICE_PRINCIPAL));
 
@@ -45,7 +45,7 @@ public class AuthorizationListTest {
                 iripHelper.region("iad")
         );
         List<String> prodServicePrincipalsAllowedApis = new ArrayList<>();
-        prodServicePrincipalsAllowedApis.add(AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES);
+        prodServicePrincipalsAllowedApis.add(AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES_API);
         Assertions.assertEquals(prodServicePrincipalsAllowedApis,
                 AuthorizedServicePrincipalsToApis.get("iad7.iad.prod.ebs-kapow.aws.internal"));
     }
@@ -58,13 +58,13 @@ public class AuthorizationListTest {
         Map<String, List<String>> authorizedServicePrincipalsToApis = new HashMap<>();
         String testOperation = "EbsBlacksmithService/TestOperation";
         AuthorizationList.authorize(authorizedServicePrincipalsToApis,
-                AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES,
+                AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES_API,
                 AuthorizationList.EBS_KAPOW_GAMMA_SERVICE_PRINCIPAL);
         AuthorizationList.authorize(authorizedServicePrincipalsToApis,
                 testOperation,
                 AuthorizationList.EBS_KAPOW_GAMMA_SERVICE_PRINCIPAL);
         List<String> gammaServicePrincipalsAllowedApis = new ArrayList<>();
-        gammaServicePrincipalsAllowedApis.add(AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES);
+        gammaServicePrincipalsAllowedApis.add(AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES_API);
         gammaServicePrincipalsAllowedApis.add(testOperation);
         Assertions.assertEquals(gammaServicePrincipalsAllowedApis,
                 authorizedServicePrincipalsToApis.get(AuthorizationList.EBS_KAPOW_GAMMA_SERVICE_PRINCIPAL));
