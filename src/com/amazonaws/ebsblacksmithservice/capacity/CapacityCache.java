@@ -3,7 +3,12 @@ package com.amazonaws.ebsblacksmithservice.capacity;
 import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -15,13 +20,22 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class CapacityCache {
+
+    private static final Duration INITIAL_DELAY = Duration.ofMinutes(0);
+    private static final Duration RUN_INTERVAL = Duration.ofMinutes(5);
+
     CapacityProvider capacityProvider;
 
     List<MetalServerInternal> servers;
 
-    public CapacityCache(CapacityProvider capacityProvider) {
+    public CapacityCache(CapacityProvider capacityProvider, ScheduledExecutorService scheduler) {
         this.capacityProvider = capacityProvider;
-        update();
+        scheduler.scheduleAtFixedRate(this::update, INITIAL_DELAY.toMinutes(),
+                RUN_INTERVAL.toMinutes() , TimeUnit.MINUTES);
+    }
+
+    public CapacityCache(CapacityProvider capacityProvider) {
+        this(capacityProvider, Executors.newSingleThreadScheduledExecutor());
     }
 
     public List<MetalServerInternal> getMetalServers() {
@@ -29,12 +43,16 @@ public class CapacityCache {
     }
 
     public void update() {
-        log.info("Refreshing the capacity cache");
-        servers = capacityProvider.loadServerData()
-            .stream()
-            .filter(server -> isNonPublicRouteableIp(server.getIpAddress()))
-            .collect(Collectors.toList());
-        log.info(String.format("Loaded %s MetalServer entries into the cache", servers.size()));
+       try {
+           log.info("Refreshing the capacity cache");
+           servers = capacityProvider.loadServerData()
+                   .stream()
+                   .filter(server -> isNonPublicRouteableIp(server.getIpAddress()))
+                   .collect(Collectors.toList());
+           log.info("Loaded {} MetalServer entries into the cache", servers.size());
+       } catch (Exception e) {
+           log.error("Failed to refresh capacity cache", e);
+       }
     }
 
     private boolean isNonPublicRouteableIp(String ip) {
