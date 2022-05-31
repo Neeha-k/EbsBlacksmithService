@@ -13,11 +13,11 @@ use lib '/apollo/lib';
 
 use Amazon::Apollo::EnvironmentInfo qw(get_op_config_value_single);
 
-my $port = get_op_config_value_single('HttpServer', 'httpRegularPort');
-die "Could not find an op config value for HttpServer.httpRegularPort.\n" unless $port;
+my $port = get_op_config_value_single('HttpServer', 'httpSecurePort');
+die "Could not find an op config value for HttpServer.httpSecurePort.\n" unless $port;
 
 $ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
-my $url  = "http://localhost:$port/deep_ping";
+my $url  = "https://localhost:$port/deep_ping";
 my $cmd = "/usr/bin/GET -t 10 $url";
 
 my $maxWaitTime   = 500; # seconds.
