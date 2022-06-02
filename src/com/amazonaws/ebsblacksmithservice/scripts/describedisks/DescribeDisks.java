@@ -29,6 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class DescribeDisks {
     private static final String IP = "--ip=";
+    private static final String PORT = "--port=";
 
     private static final String DRY_RUN = "--dry-run";
 
@@ -45,7 +46,7 @@ public class DescribeDisks {
             .withCoapRequestSender(new MetalServerRequestSender(gunpowderClient, true))
             .build();
 
-        DescribeDisksRequest describeDisksRequest = new DescribeDisksRequest(getHost(args), 443, "test-request-id");
+        DescribeDisksRequest describeDisksRequest = new DescribeDisksRequest(getHost(args), getPort(args), "test-request-id");
 
         log.info("Sending request: " + describeDisksRequest + " to host " + getHost(args));
 
@@ -66,6 +67,16 @@ public class DescribeDisks {
             }
         }
         return host;
+    }
+
+    private static Integer getPort(String[] args) {
+        Integer port = null;
+        for (String arg: args) {
+            if (arg.contains(PORT)) {
+                port = Integer.valueOf(arg.substring(PORT.length()));
+            }
+        }
+        return port;
     }
 
     private static boolean isDryRun(String[] args) {
