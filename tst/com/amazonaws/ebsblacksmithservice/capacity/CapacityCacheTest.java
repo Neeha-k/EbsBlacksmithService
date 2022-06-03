@@ -1,4 +1,4 @@
-package capacity;
+package com.amazonaws.ebsblacksmithservice.capacity;
 
 import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
 import com.amazonaws.ebsblacksmithservice.capacity.CapacityProvider;

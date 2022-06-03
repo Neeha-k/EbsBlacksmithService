@@ -7,3 +7,6 @@
 /gradlew
 /gradlew.bat
 /wrapper/
+annotation-generated-src
+annotation-generated-tst
+configuration/brazil-config/global

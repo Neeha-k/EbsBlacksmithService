@@ -88,6 +88,7 @@ package.EbsBlacksmithService = {
         1.0 = {
             JUnit5 = 5.x;
             Mockito = 3.x;
+            Mockito-junit-jupiter = 3.x;
         };
     };
 

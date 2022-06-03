@@ -7,9 +7,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * CapacityCache holds an in-memory view of the Metal Servers to be used for placement.
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CapacityCache {
 
-    private static final Duration INITIAL_DELAY = Duration.ofMinutes(0);
+    private static final Duration INITIAL_DELAY = Duration.ofMinutes(5);
     private static final Duration RUN_INTERVAL = Duration.ofMinutes(5);
 
     CapacityProvider capacityProvider;
@@ -30,6 +28,7 @@ public class CapacityCache {
 
     public CapacityCache(CapacityProvider capacityProvider, ScheduledExecutorService scheduler) {
         this.capacityProvider = capacityProvider;
+        this.update();
         scheduler.scheduleAtFixedRate(this::update, INITIAL_DELAY.toMinutes(),
                 RUN_INTERVAL.toMinutes() , TimeUnit.MINUTES);
     }

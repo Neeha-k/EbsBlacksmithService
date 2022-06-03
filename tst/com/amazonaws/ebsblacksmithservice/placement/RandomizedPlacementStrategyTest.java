@@ -1,4 +1,4 @@
-package placement;
+package com.amazonaws.ebsblacksmithservice.placement;
 
 import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementOptions;

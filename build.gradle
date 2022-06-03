@@ -73,6 +73,7 @@ dependencies {
     annotationProcessor coralService
     testAnnotationProcessor coralGenerator
     testAnnotationProcessor coralService
+    testAnnotationProcessor coralDagger
     annotationProcessor coralDagger
     compileOnly coralDagger
 

@@ -8,6 +8,7 @@ import com.amazon.coral.service.LogRequests;
 import com.amazon.coral.validate.Validated;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeRequest;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeResponse;
+import com.amazonaws.ebsblacksmithservice.MetalDisk;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementOptions;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementStrategy;
 import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
 import javax.measure.unit.Unit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("EbsBlacksmithService")
 @RequiredArgsConstructor(onConstructor_ = @Inject)
@@ -38,22 +40,30 @@ public class GetPlacementForMetalVolumeActivity extends Activity {
     @Validated
     @LogRequests
     public GetPlacementForMetalVolumeResponse enact(GetPlacementForMetalVolumeRequest request) {
-        PlacementOptions options = PlacementOptions.builder()
+        final PlacementOptions options = PlacementOptions.builder()
                 .responseSizeRequested(RESPONSE_SIZE)
                 .customerId(request.getCustomerId())
                 .build();
 
-        List<MetalServerInternal> servers = placementStrategy.place(options);
+        final List<MetalServerInternal> servers = placementStrategy.place(options);
 
-        Metrics metrics = getMetrics();
-        if (servers.size() < RESPONSE_SIZE) {
+        final List<MetalDisk> availableDisks = servers.stream()
+                .flatMap(metalServerInternal -> metalServerInternal
+                        .toMetalDiskCoralModel()
+                        .stream())
+                .collect(Collectors.toList());
+
+
+        final Metrics metrics = getMetrics();
+        if (availableDisks.size() < RESPONSE_SIZE) {
             metrics.addCount(RECOMMENDATIONS_MISSING, RESPONSE_SIZE - servers.size(), Unit.ONE);
         }
-        metrics.addCount(RECOMMENDATIONS_ACTUAL, servers.size(), Unit.ONE);
+        metrics.addCount(RECOMMENDATIONS_ACTUAL, availableDisks.size(), Unit.ONE);
         metrics.addCount(RECOMMENDATIONS_MAX, RESPONSE_SIZE, Unit.ONE);
 
         return GetPlacementForMetalVolumeResponse.builder()
                 .withMetalServerRecommendations(MetalServerInternal.toCoralModel(servers))
+                .withMetalDiskRecommendations(availableDisks)
                 .build();
     }
 }

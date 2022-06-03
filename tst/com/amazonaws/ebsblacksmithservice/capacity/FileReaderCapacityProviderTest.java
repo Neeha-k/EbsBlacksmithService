@@ -1,4 +1,4 @@
-package capacity;
+package com.amazonaws.ebsblacksmithservice.capacity;
 
 import com.amazonaws.ebsblacksmithservice.capacity.FileReaderCapacityProvider;
 import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
