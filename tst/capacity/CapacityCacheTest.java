@@ -69,19 +69,4 @@ public class CapacityCacheTest {
         List<MetalServerInternal> metalServersFormer = cache.getMetalServers();
         Assertions.assertNotEquals(metalServersInitial, metalServersFormer);
     }
-
-    @Test
-    void updateFiltersNonPublicIps() {
-
-        when(capacityProvider.loadServerData()).thenReturn(ImmutableList.of(MetalServerInternal.builder()
-                        .availableDisks(1)
-                        .ipAddress("0.0.0.0")
-                .build()));
-
-        cache.update();
-
-        List<MetalServerInternal> metalServers = cache.getMetalServers();
-
-        Assertions.assertEquals(0, metalServers.size());
-    }
 }

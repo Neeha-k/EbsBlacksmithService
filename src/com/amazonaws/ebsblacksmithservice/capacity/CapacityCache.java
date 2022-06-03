@@ -45,17 +45,10 @@ public class CapacityCache {
     public void update() {
        try {
            log.info("Refreshing the capacity cache");
-           servers = capacityProvider.loadServerData()
-                   .stream()
-                   .filter(server -> isNonPublicRouteableIp(server.getIpAddress()))
-                   .collect(Collectors.toList());
+           servers = capacityProvider.loadServerData();
            log.info("Loaded {} MetalServer entries into the cache", servers.size());
        } catch (Exception e) {
            log.error("Failed to refresh capacity cache", e);
        }
-    }
-
-    private boolean isNonPublicRouteableIp(String ip) {
-        return ip.startsWith("127.");
     }
 }

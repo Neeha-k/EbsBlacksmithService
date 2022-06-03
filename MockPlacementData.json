@@ -1,26 +1,6 @@
 [
   {
-    "ipAddress": "127.0.1.0:8080",
+    "ipAddress": "30.133.7.109:5684",
     "availableDisks": 1
-  },
-  {
-    "ipAddress": "127.0.1.1:8080",
-    "availableDisks": 22
-  },
-  {
-    "ipAddress": "127.0.1.2:8080",
-    "availableDisks": 5
-  },
-  {
-    "ipAddress": "127.0.1.3:8080",
-    "availableDisks": 18
-  },
-  {
-    "ipAddress": "127.0.1.4:8080",
-    "availableDisks": 22
-  },
-  {
-    "ipAddress": "127.0.1.5:8080",
-    "availableDisks": 0
   }
 ]
