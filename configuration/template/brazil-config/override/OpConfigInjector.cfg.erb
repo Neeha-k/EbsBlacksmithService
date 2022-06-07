@@ -1,0 +1,84 @@
+# ALL_REGIONS=true
+# TARGET_SERVICE = ebs
+
+################################
+# List what opconfig to inject #
+################################
+
+*.*.OpConfigInjector.OpConfigList += (
+    "PubSub",
+    "HttpServer",
+    "ProcessManager",
+    "LogPuller"
+);
+
+*.*.OpConfigInjector.Config.PubSub = {
+    realm = "$REALM$";
+    domain = "$DOMAIN$";
+};
+
+*.*.OpConfigInjector.Config.HttpServer += {
+    httpSecurePort = "8443";
+    httpRegularPort = "8080";
+};
+
+*.*.OpConfigInjector.Config.ProcessManager += {
+    overrideFile = ("OctaneProcessManagerOverrides.cfg");
+};
+
+*.*.OpConfigInjector.Config.LogPuller = {
+    action = local;
+    frequency = hourly;
+    timezone = Universal;
+    diskRetention = 14;
+};
+
+*.*.OpConfigInjector.Config.LogPuller.logNames = (
+    "application.log",
+    "log-remover.log",
+    "log-rotator.log",
+    "service_log",
+    "processmanager.log",
+    "website-log-pusher.log"
+);
+
+*.*.OpConfigInjector.Config.LogPuller.processmanager.log += {
+    # processmanager.log is rotated daily, not hourly
+    frequency = daily;
+};
+
+# EBSZoneAndRegion Configs for Gamma
+gamma.*.OpConfigInjector.Config.EBSZoneAndRegion = {
+    EBSZoneAndRegion.awspublicregion = "us-east-1";
+    EBSZoneAndRegion.awsregion = "IAD";
+    EBSZoneAndRegion.ec2availabilityzone = "IAD7";
+    EBSZoneAndRegion.subzone = "IAD7";
+};
+
+# Monitoring.TSD Configs for Beta/Gamma
+beta.*.OpConfigInjector.Config.Monitoring.TSD = {
+    PerformanceStreamDataset = "Test:Prod";
+    PerformanceStreamDestination = "IAD";
+};
+
+gamma.*.OpConfigInjector.Config.Monitoring.TSD = {
+    PerformanceStreamDataset = "Test:Prod";
+    PerformanceStreamDestination = "IAD";
+};
+
+# Configs for prod
+<% @regions.each do |region| %>
+  <% region.availability_zones.each do |zone|
+    airport_code = region.airport_code.downcase
+    public_region = region.region_name.downcase
+    zone_name = zone.name.downcase
+  %>
+
+    prod.<%= zone_name %>.OpConfigInjector.Config.EBSZoneAndRegion += {
+      EBSZoneAndRegion.awspublicregion = "<%= public_region %>";
+      EBSZoneAndRegion.awsregion = "<%= airport_code.upcase %>";
+      EBSZoneAndRegion.ec2availabilityzone = "<%= zone_name.upcase %>";
+      EBSZoneAndRegion.subzone = "<%= zone_name.upcase %>";
+    };
+  <% end %>
+<% end %>
