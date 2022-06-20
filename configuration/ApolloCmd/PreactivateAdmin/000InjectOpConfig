@@ -11,11 +11,9 @@ if ARGV[0] == 'ec2'
 else
     # Get current environment
     env_info = Amazon::Apollo::EnvironmentInfo.new
-
-    # Get domain value and realm value based on current environment
-    env_name_path = env_info.environment_full_name.split("/")
-
     domain = env_info.environment_stage_name.downcase
+
+    rip_helper = Amazon::RIP::RIPHelper.instance
     realm = rip_helper.determine_region.region_name.downcase
 end
 
