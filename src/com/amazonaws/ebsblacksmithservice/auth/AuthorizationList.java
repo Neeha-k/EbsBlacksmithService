@@ -20,9 +20,9 @@ public class AuthorizationList {
     private static final String SERVICE_NAME = EnvironmentModule.APP_NAME + "/";
 
     public static final String EBS_INTEGRATION_TESTS_IDM_SERVICE_PRINCIPAL = "beta.ebs-metal-blacksmith.aws.internal";
-    public static final String EBS_KAPOW_IDM_SERVICE_PRINCIPAL = "iad7.iad.prod.ebs-kapow.aws.internal";
-    private static final String EBS_KAPOW_PROD_SERVICE_PRINCIPAL = "%s.%s.prod.ebs-kapow.aws.internal";
-    public static final String EBS_KAPOW_GAMMA_SERVICE_PRINCIPAL = "gamma.ebs-kapow.aws.internal";
+    public static final String EBS_KAPOW_IDM_SERVICE_PRINCIPAL = "iad7.iad.prod.kapow-service.aws.internal";
+    private static final String EBS_KAPOW_PROD_SERVICE_PRINCIPAL = "%s.%s.prod.kapow-service.aws.internal";
+    public static final String EBS_KAPOW_GAMMA_SERVICE_PRINCIPAL = "gamma.kapow-service.aws.internal";
 
     public static final String GET_PLACEMENT_FOR_METAL_VOLUMES_API = fullName("GetPlacementForMetalVolume");
 

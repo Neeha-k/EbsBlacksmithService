@@ -47,7 +47,7 @@ public class AuthorizationListTest {
         List<String> prodServicePrincipalsAllowedApis = new ArrayList<>();
         prodServicePrincipalsAllowedApis.add(AuthorizationList.GET_PLACEMENT_FOR_METAL_VOLUMES_API);
         Assertions.assertEquals(prodServicePrincipalsAllowedApis,
-                AuthorizedServicePrincipalsToApis.get("iad7.iad.prod.ebs-kapow.aws.internal"));
+                AuthorizedServicePrincipalsToApis.get("iad7.iad.prod.kapow-service.aws.internal"));
     }
 
     /**
