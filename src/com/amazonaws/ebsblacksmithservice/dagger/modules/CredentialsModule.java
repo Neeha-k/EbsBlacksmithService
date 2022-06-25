@@ -16,28 +16,28 @@ import com.amazonaws.rip.models.region.IRegion;
 
 @Module
 public class CredentialsModule {
-    private static final String TURTLE_ROLE_TEMPLATE = "%s-%s-%s";
+    private static final String TURTLE_ROLE_TEMPLATE = "%s-%s";
     @VisibleForTesting
     protected static final String ARPS_TURTLE_ROLE_NAME = "EbsBlacksmithServiceARPSRole-v0";
 
     @Provides
     @Singleton
     @Named("ARPSCredentials")
-    public AwsCredentialsProvider getTurtleARPSCredentials(@Named("Domain") final Domain domain, @Named("subZone") final String subZone,
+    public AwsCredentialsProvider getTurtleARPSCredentials(@Named("Domain") final Domain domain,
         @Named("IsIdm") Boolean isIdm) {
             return TurtleAWSCredentialsProvider.builder()
                 .serviceName(EnvironmentModule.APP_NAME)
                 .domain(domain.toString().toLowerCase())
-                .roleName(getARPSRoleName(domain, subZone, isIdm))
+                .roleName(getARPSRoleName(domain, isIdm))
                 .build();
     }
 
     @VisibleForTesting
-    protected String getARPSRoleName(Domain domain, String subZone, Boolean isIdm) {
+    protected String getARPSRoleName(Domain domain, Boolean isIdm) {
         if(isIdm) {
-            return String.format(TURTLE_ROLE_TEMPLATE, ARPS_TURTLE_ROLE_NAME, "iad7", domain.toString().toLowerCase());
+            return String.format(TURTLE_ROLE_TEMPLATE, ARPS_TURTLE_ROLE_NAME, domain.toString().toLowerCase());
         }
 
-        return String.format(TURTLE_ROLE_TEMPLATE, ARPS_TURTLE_ROLE_NAME, subZone.toLowerCase(), domain.toString().toLowerCase());
+        return String.format(TURTLE_ROLE_TEMPLATE, ARPS_TURTLE_ROLE_NAME, domain.toString().toLowerCase());
     }
 }
