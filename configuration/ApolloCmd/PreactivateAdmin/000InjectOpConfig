@@ -7,14 +7,15 @@ require 'amazon/rip/rip_helper'
 if ARGV[0] == 'ec2'
     # Check for an IDM override, which is specified by passing "ec2" to the script (e.g. running "000InjectOpConfig ec2")
     domain = 'ec2'
-    realm = 'us-east-1'
+    realm = 'iad7'
 else
     # Get current environment
     env_info = Amazon::Apollo::EnvironmentInfo.new
     domain = env_info.environment_stage_name.downcase
 
+    # Setting realm to zone
     rip_helper = Amazon::RIP::RIPHelper.instance
-    realm = rip_helper.determine_region.region_name.downcase
+    realm = rip_helper.determine_availability_zone.name.downcase
 end
 
 # Set new config

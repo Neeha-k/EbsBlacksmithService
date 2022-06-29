@@ -13,6 +13,14 @@
     "EBSZoneAndRegion"
 );
 
+# OpConfigList for IDM as we want to have STACK_ID in EBSZoneAndRegion config set which is only set in IDM apollo-shim
+ec2.*.OpConfigInjector.OpConfigList += (
+    "PubSub",
+    "HttpServer",
+    "ProcessManager",
+    "LogPuller"
+);
+
 *.*.OpConfigInjector.Config.PubSub = {
     realm = "$REALM$";
     domain = "$DOMAIN$";
