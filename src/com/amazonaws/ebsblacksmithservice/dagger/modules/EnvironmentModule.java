@@ -184,4 +184,11 @@ public class EnvironmentModule {
 
         return AppConfig.instance();
     }
+
+    @Provides
+    @Singleton
+    @Named("blacksmith.placementDataFile")
+    static String providePlacementDataFile(final AppConfigTree appConfigTree) {
+        return appConfigTree.findString("blacksmith.placementDataFile");
+    }
 }
