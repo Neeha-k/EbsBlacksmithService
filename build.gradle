@@ -255,40 +255,6 @@ def server = tasks.register('server', JavaExec) {
     args "--realm=us-west-2"
 }
 
-def describeDisks = tasks.register('describeDisks', com.amazon.brazil.gradle.launcher.GenerateWrapperTask) {
-    target "$brazilGradle.buildDir/bin/describe-disks.sh"
-    className 'com.amazonaws.ebsblacksmithservice.scripts.describedisks.DescribeDisks'
-
-    jvmArgs '-ea'
-    jvmArgs '-XX:+UseG1GC'
-    jvmArgs '-XX:MaxGCPauseMillis=100'
-    jvmArgs '-XX:+PerfDisableSharedMem'
-    // Kill on OOM (logscan for PMAdmin.log will trigger an alarm)
-    jvmArgs '-XX:+ExitOnOutOfMemoryError'
-
-    environment 'CORAL_CONFIG_PATH', '${ENVROOT}/coral-config', false
-
-    // Setup trust store for SSL certs according to https://w.amazon.com/index.php/EC2/Security/PKI/Onboarding#Using_EC2CACerts
-    systemProperty 'javax.net.ssl.trustStore', '${ENVROOT}/certs/ec2/InternalAndExternalTrustStore.jks', false
-    systemProperty 'javax.net.ssl.trustStorePassword', 'amazon'
-
-    /*
-     Idle client connections are closed after 20 seconds. The current
-     default idle connection timeout for netscaler VIPs is 180 seconds,
-     meaning idle client connections will close before a VIP reaps the
-     connection from its idle connection pool. In general, this prevents
-     connections from going stale and removes the need to check for
-     stale connections. Stale connection checking has
-     been disabled for the BSFJavaClient in brazil config.
-    */
-    systemProperty 'timeout.close.idle.connections', '20'
-
-    systemProperty 'log4j.configurationFile', 'file:${ENVROOT}/log-configuration/log4j2-gamma.xml', false
-    systemProperty 'java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager'
-    systemProperty 'Log4jContextSelector', 'org.apache.logging.log4j.core.async.AsyncLoggerContextSelector'
-    systemProperty 'root', '${ENVROOT}', false
-}
-
 // Generate configuration files via RIPConfigBuilder
 def ripConfigBuilderPackage = 'RIPConfigBuilder-2.0'
 if (!brazilGradle.path("[RIPConfigBuilder]pkg.configfarm.bin").contains("[${ripConfigBuilderPackage}]")) {
@@ -324,5 +290,5 @@ tasks.named("copyConfigurationToBuildPrivate").configure {
 }
 
 tasks.named("build").configure {
-    dependsOn generateOpConfig, copyConfigurationToBuild, apolloScript, describeDisks
+    dependsOn generateOpConfig, copyConfigurationToBuild, apolloScript
 }
