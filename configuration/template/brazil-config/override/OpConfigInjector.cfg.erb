@@ -10,7 +10,8 @@
     "HttpServer",
     "ProcessManager",
     "LogPuller",
-    "EBSZoneAndRegion"
+    "EBSZoneAndRegion",
+    "CloudWatchInternalAgent"
 );
 
 # OpConfigList for IDM as we want to have STACK_ID in EBSZoneAndRegion config set which is only set in IDM apollo-shim
@@ -31,8 +32,8 @@ ec2.*.OpConfigInjector.OpConfigList += (
     httpRegularPort = "8080";
 };
 
-*.*.OpConfigInjector.Config.ProcessManager += {
-    overrideFile = ("OctaneProcessManagerOverrides.cfg");
+*.*.OpConfigInjector.Config.ProcessManager = {
+    overrideFile = ("OctaneProcessManagerOverrides.cfg", "CWInternalAgent.cfg");
 };
 
 *.*.OpConfigInjector.Config.LogPuller = {
@@ -73,6 +74,14 @@ beta.*.OpConfigInjector.Config.Monitoring.TSD = {
 gamma.*.OpConfigInjector.Config.Monitoring.TSD = {
     PerformanceStreamDataset = "Test:Prod";
     PerformanceStreamDestination = "IAD";
+};
+
+gamma.*.OpConfigInjector.Config.CloudWatchInternalAgent = {
+    ConfigFileName = "amazon-cloudwatch-agent.json";
+    CredentialsFilePath = "/var/ebs/turtle_creds/EbsBlacksmithService_EbsBlacksmithServiceCloudWatchAgentRole-v0-gamma_$DOMAIN$/credentials";
+    OdinMaterialSetName = "default";
+    Region = "$REALM";
+    RoleARN = "default";
 };
 
 # Configs for prod

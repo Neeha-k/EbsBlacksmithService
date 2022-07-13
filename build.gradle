@@ -122,6 +122,7 @@ def configurationFiles = copySpec {
         include 'ApolloCmd/**/*'
         include 'log-configuration/**/*'
         include 'monitoring/**/*'
+        include 'etc/cwinternalagent/**/*'
     }
 }
 
