@@ -184,6 +184,7 @@ def apolloScript = tasks.register('apolloScript', com.amazon.brazil.gradle.launc
     systemProperty 'timeout.close.idle.connections', '20'
 
     systemProperty 'log4j.configurationFile', 'file:${ENVROOT}/log-configuration/log4j2-${DOMAIN}.xml', false
+    systemProperty 'com.amazon.coral.telemetry.disabled', 'disabled'
     systemProperty 'java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager'
     systemProperty 'Log4jContextSelector', 'org.apache.logging.log4j.core.async.AsyncLoggerContextSelector'
     systemProperty 'root', '${ENVROOT}', false
@@ -216,6 +217,7 @@ def server = tasks.register('server', JavaExec) {
     systemProperty 'java.util.logging.manager', "org.apache.logging.log4j.jul.LogManager"
     systemProperty 'Log4jContextSelector', "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
     systemProperty 'log4j.configurationFile', "${brazilGradle.path('package-src-root')}/configuration/log-configuration/log4j2-test.xml"
+    systemProperty 'com.amazon.coral.telemetry.disabled', 'disabled'
     systemProperty 'apollo.OCF.HttpServer.httpRegularPort', "${httpPort}"
     systemProperty 'apollo.OCF.HttpServer.httpSecurePort', "${httpsPort}"
     systemProperty 'java.io.tmpdir', "${brazilGradle.buildDir}/private/var/tmp"
