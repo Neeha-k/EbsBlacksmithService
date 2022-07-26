@@ -3,7 +3,6 @@ package com.amazonaws.ebsblacksmithservice.activity;
 import com.amazonaws.ebsblacksmithservice.AbstractFunctionalTestCase;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeRequest;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeResponse;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
