@@ -1,22 +1,360 @@
 [
   {
-    "ipAddress": "30.133.7.109:5684",
-    "availableDisks": 3,
+    "ipAddress": "30.133.7.170:5684",
+    "availableDisks": 21,
     "metalDisks": [
       {
-        "logicalDiskId": "c7ac085a-9012-42bc-a879-dfefa08f2160",
+        "logicalDiskId": "3RJNL12A",
         "status": "Available"
       },
       {
-        "logicalDiskId": "327a498b-c4c9-4009-a7b7-fd432ef2d831",
-        "status": "Allocated"
-      },
-      {
-        "logicalDiskId": "98642782-3b76-4347-8fd2-98dffbdc0e7e",
+        "logicalDiskId": "3FJJ49XT",
         "status": "Available"
       },
       {
-        "logicalDiskId": "dd0b36a1-31d3-4fec-9162-9358ecf911a7",
+        "logicalDiskId": "3RHZP07A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLNR8T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJS3GXA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJ4A7WT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKHHMT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJJKYYT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJHUX7T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKS7WT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHTLKDT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLTWGT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMDLHT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJR1AJA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJ65Z5A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJM061T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJJ54NT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJM4V5T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJNG43A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJHGTYT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKWA2T",
+        "status": "Available"
+      }
+    ]
+  },
+  {
+    "ipAddress": "30.133.7.181:5684",
+    "availableDisks": 21,
+    "metalDisks": [
+      {
+        "logicalDiskId": "3RJPG42A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLU28T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMRZMT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLU5KT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJMBUZA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJLWSSA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHUZ9XT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLYJST",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLYKVT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLYNPT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKAMXT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJS2J8A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJG8LHT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJK9LKT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHVZRBT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJN31XA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FH6XPMT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJNKD3A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJGSXXT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJK9K2T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJJ4Y8T",
+        "status": "Available"
+      }
+    ]
+  },
+  {
+    "ipAddress": "30.133.7.112:5684",
+    "availableDisks": 21,
+    "metalDisks": [
+      {
+        "logicalDiskId": "3FJLG5YT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHUDP8T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKARZT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJJEVLT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKY9VT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHTYB6T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHU6N6T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMHPGT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJMLZDA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJK5MUT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJ280PT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMED5T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKR35T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMNT1T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMS2XT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJL8S1A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMDTHT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJJGT6A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJH96XT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJJEGTA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHU6WNT",
+        "status": "Available"
+      }
+    ]
+  },
+  {
+    "ipAddress": "30.133.7.117:5684",
+    "availableDisks": 21,
+    "metalDisks": [
+      {
+        "logicalDiskId": "3RHYSY5A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJMA5HT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJJNU6T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKMZUT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJJ4GNT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJKH23T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHPWBJT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHTWPRT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJK08ET",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJPL0SA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHYL4VT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHTMB3T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJRVGBA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJMKU8A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLV44T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RHM563A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHZPZ9T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHZNV9T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJPKG1A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHTZ52T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHW8BZT",
         "status": "Available"
       }
     ]

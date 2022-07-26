@@ -1,22 +1,90 @@
 [
   {
-    "ipAddress": "30.133.7.109:5684",
-    "availableDisks": 3,
+    "ipAddress": "30.133.7.151:5684",
+    "availableDisks": 21,
     "metalDisks": [
       {
-        "logicalDiskId": "c7ac085a-9012-42bc-a879-dfefa08f2160",
+        "logicalDiskId": "3FJM539T",
         "status": "Available"
       },
       {
-        "logicalDiskId": "327a498b-c4c9-4009-a7b7-fd432ef2d831",
-        "status": "Allocated"
-      },
-      {
-        "logicalDiskId": "98642782-3b76-4347-8fd2-98dffbdc0e7e",
+        "logicalDiskId": "3FJLM0UT",
         "status": "Available"
       },
       {
-        "logicalDiskId": "dd0b36a1-31d3-4fec-9162-9358ecf911a7",
+        "logicalDiskId": "3FJMESKT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJLR0HA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJM112T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLTW1T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLP4ET",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJPP5UA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJS3N9A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJKUR0A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLZ38T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLG5NT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJE0RXT",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJM6B6T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLB47T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJLEU6T",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJPKGMA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJPNBRA",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FJL82ET",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3RJS3M6A",
+        "status": "Available"
+      },
+      {
+        "logicalDiskId": "3FHZY87T",
         "status": "Available"
       }
     ]
