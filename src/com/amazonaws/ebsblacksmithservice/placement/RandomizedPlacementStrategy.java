@@ -1,43 +1,36 @@
 package com.amazonaws.ebsblacksmithservice.placement;
 
-import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
-import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * This placement strategy returns a list of metal servers in a random order.
- * <p>
- * A metal server with no capacity available will not be returned as a recommendation.
- */
-public class RandomizedPlacementStrategy implements PlacementStrategy {
-    final CapacityCache cache;
+import lombok.AllArgsConstructor;
 
-    public RandomizedPlacementStrategy(CapacityCache cache) {
-        this.cache = cache;
+import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
+import com.amazonaws.ebsblacksmithservice.types.MetalDiskInternal;
+import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
+
+/**
+ * This placement strategy returns all metal servers and list of disk in a random order.
+ */
+@AllArgsConstructor
+public class RandomizedPlacementStrategy implements PlacementStrategy {
+    private final CapacityCache cache;
+
+    @Override
+    public List<MetalServerInternal> getAllMetalServers() {
+        var servers = cache.getMetalServers();
+        Collections.shuffle(servers);
+        return servers;
     }
 
     @Override
-    public List<MetalServerInternal> place(PlacementOptions options) {
-
-        var servers = MetalServerInternal
-                .deepCopy(
-                        cache.getMetalServers())
-                .stream()
-                .filter(server -> server.getAvailableDisks() != 0)
-                .collect(Collectors.toList());
-
-        //TODO reshuffling should be changed to only shuffle MetalDisk once MetalServer is removed from response
-        Collections.shuffle(servers);
-
-        servers
-                .forEach(server -> Collections.shuffle(server.getMetalDisks()));
-
-        return servers
-                .stream()
-                .limit(options.getResponseSizeRequested())
-                .collect(Collectors.toList());
+    public List<MetalDiskInternal> placementDisks(final PlacementOptions options) {
+        var disks = cache.getMetalDisks();
+        Collections.shuffle(disks);
+        return disks
+            .stream()
+            .limit(options.getDiskResponseSizeRequested())
+            .collect(Collectors.toList());
     }
 }

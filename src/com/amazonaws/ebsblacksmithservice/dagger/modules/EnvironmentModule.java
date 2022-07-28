@@ -143,7 +143,7 @@ public class EnvironmentModule {
      * Copied from EnvironmentModule in AmazonCoralDaggerSupportRuntime
      * The one provided by AmazonCoralDaggerSupportRuntime requires a initialized AppConfig instance
      * And that's not possible with Dagger as main() method is in Dagger generated file
-     * We have to initialize AppConfig by ourself
+     * We have to initialize AppConfig by ourselves
      */
     @Provides
     @Singleton
@@ -187,8 +187,15 @@ public class EnvironmentModule {
 
     @Provides
     @Singleton
-    @Named("blacksmith.placementDataFile")
-    static String providePlacementDataFile(final AppConfigTree appConfigTree) {
-        return appConfigTree.findString("blacksmith.placementDataFile");
+    @Named("blacksmith.serverPlacementDataFile")
+    static String provideServerPlacementDataFile(final AppConfigTree appConfigTree) {
+        return appConfigTree.findString("blacksmith.serverPlacementDataFile");
+    }
+
+    @Provides
+    @Singleton
+    @Named("blacksmith.diskPlacementDataFile")
+    static String provideDiskPlacementDataFile(final AppConfigTree appConfigTree) {
+        return appConfigTree.findString("blacksmith.diskPlacementDataFile");
     }
 }

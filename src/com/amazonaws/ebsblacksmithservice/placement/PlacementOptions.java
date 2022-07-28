@@ -6,6 +6,5 @@ import lombok.Getter;
 @Builder
 @Getter
 public class PlacementOptions {
-    private int responseSizeRequested;
-    private String customerId;
+    private int diskResponseSizeRequested;
 }

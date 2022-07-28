@@ -1,16 +1,18 @@
 package com.amazonaws.ebsblacksmithservice.dagger;
 
-import amazon.platform.config.AppConfig;
-import amazon.platform.config.AppConfigTree;
-import dagger.Module;
-import dagger.Provides;
+import static com.amazonaws.ebsblacksmithservice.dagger.modules.EnvironmentModule.APP_NAME;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.amazonaws.ebsblacksmithservice.dagger.modules.EnvironmentModule.APP_NAME;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+
+import amazon.platform.config.AppConfig;
+import amazon.platform.config.AppConfigTree;
 
 @Module
 public class TestEnvironmentModule {
@@ -40,8 +42,15 @@ public class TestEnvironmentModule {
 
     @Provides
     @Singleton
-    @Named("blacksmith.placementDataFile")
-    static String providePlacementDataFile(final AppConfigTree appConfigTree) {
-        return appConfigTree.findString("blacksmith.placementDataFile");
+    @Named("blacksmith.serverPlacementDataFile")
+    static String provideServerPlacementDataFile(final AppConfigTree appConfigTree) {
+        return appConfigTree.findString("blacksmith.serverPlacementDataFile");
+    }
+
+    @Provides
+    @Singleton
+    @Named("blacksmith.diskPlacementDataFile")
+    static String provideDiskPlacementDataFile(final AppConfigTree appConfigTree) {
+        return appConfigTree.findString("blacksmith.diskPlacementDataFile");
     }
 }

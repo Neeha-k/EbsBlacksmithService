@@ -96,6 +96,10 @@ spotbugs {
     ignoreFailures.set(false)
 }
 
+spotbugsTest {
+    excludeFilter = file('configuration/spotbugs/spotbugs-exclude.xml')
+}
+
 test {
     useJUnitPlatform()
 }

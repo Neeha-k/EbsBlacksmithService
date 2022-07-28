@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <!-- Verify call on method with return type is wrongly flagged -->
+        <Class name="com.amazonaws.ebsblacksmithservice.placement.RandomizedPlacementStrategyTest" />
+        <Bug code="RV" />
+    </Match>
+</FindBugsFilter>

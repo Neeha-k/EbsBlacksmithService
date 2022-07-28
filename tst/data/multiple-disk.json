@@ -1,8 +1,10 @@
 [
   {
+    "logicalDiskId": "3FJM539T001",
     "serverAddress": "127.0.1.0:5684"
   },
   {
+    "logicalDiskId": "3FJM539T002",
     "serverAddress": "127.0.1.1:5684"
   }
 ]

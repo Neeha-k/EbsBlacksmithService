@@ -1,12 +1,13 @@
 package com.amazonaws.ebsblacksmithservice.types;
 
-import com.amazon.aws.authruntimeclient.internal.collections4.ListUtils;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.amazonaws.ebsblacksmithservice.MetalDisk;
 
 /**
  * This class represents the Disk entity in the context of BlackSmith service. Attributes of disks in this class
@@ -17,18 +18,22 @@ import java.util.stream.Collectors;
 @Builder
 @Jacksonized
 public class MetalDiskInternal {
-
     private final String logicalDiskId;
-    private final DiskStatus status;
+    private final String serverAddress;
 
-    public static List<MetalDiskInternal> deepCopy(
-            final List<MetalDiskInternal> metalDisks) {
-        return ListUtils.emptyIfNull(metalDisks)
+    public static List<MetalDisk> toCoralModel(
+            final List<MetalDiskInternal> metalDiskInternals) {
+        return metalDiskInternals
                 .stream()
-                .map(disk -> MetalDiskInternal.builder()
-                        .logicalDiskId(disk.getLogicalDiskId())
-                        .status(disk.getStatus())
-                        .build())
+                .map(MetalDiskInternal::toCoralModel)
                 .collect(Collectors.toList());
+    }
+
+    public static MetalDisk toCoralModel(
+            final MetalDiskInternal metalDiskInternal) {
+        return MetalDisk.builder()
+                .withDiskServerAddress(metalDiskInternal.getServerAddress())
+                .withLogicalDiskId(metalDiskInternal.getLogicalDiskId())
+                .build();
     }
 }

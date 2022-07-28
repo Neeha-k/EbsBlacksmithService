@@ -1,21 +1,25 @@
 package com.amazonaws.ebsblacksmithservice.placement;
 
-import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
-import com.amazonaws.ebsblacksmithservice.placement.PlacementOptions;
-import com.amazonaws.ebsblacksmithservice.placement.RandomizedPlacementStrategy;
-import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
-import com.google.common.collect.ImmutableList;
-import org.junit.jupiter.api.Assertions;
+import static com.amazonaws.ebsblacksmithservice.util.TestDataGenerator.generateMetalDisks;
+import static com.amazonaws.ebsblacksmithservice.util.TestDataGenerator.generateMetalServers;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
+import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
+import com.amazonaws.ebsblacksmithservice.types.MetalDiskInternal;
+import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
 
 public class RandomizedPlacementStrategyTest {
     @Mock
@@ -24,70 +28,58 @@ public class RandomizedPlacementStrategyTest {
     RandomizedPlacementStrategy placement;
 
     private static final int SERVER_COUNT = 10;
-    private static final int REQUESTED_SERVER_COUNT = 5;
-    private static final int MAX_SERVER_CAPACITY = 22;
-    private static final ThreadLocalRandom random = ThreadLocalRandom.current();
+    private static final int REQUESTED_DISK_COUNT = 5;
+    private static final int DISK_COUNT = 22;
 
     @BeforeEach
     void setup() {
-        MockitoAnnotations.initMocks(this);
+        openMocks(this);
+        reset(cache);
         placement = new RandomizedPlacementStrategy(cache);
+        when(cache.getMetalServers()).thenReturn(generateMetalServers(SERVER_COUNT));
+        when(cache.getMetalDisks()).thenReturn(generateMetalDisks(DISK_COUNT));
     }
 
     @Test
     void testSubsequentCallsReturnsDifferentOrdering() {
-        int largeServerCount = 1000;
-        Mockito.when(cache.getMetalServers()).thenReturn(generateMetalServers(largeServerCount));
+        final List<MetalServerInternal> servers = placement.getAllMetalServers();
+        final List<MetalServerInternal> serversOnSubsequentCall = placement.getAllMetalServers();
 
-        PlacementOptions options = PlacementOptions.builder().responseSizeRequested(largeServerCount).build();
-        List<MetalServerInternal> firstResults = placement.place(options);
-        List<MetalServerInternal> secondResults = placement.place(options);
-        Assertions.assertEquals(firstResults.size(), secondResults.size());
-        Assertions.assertNotEquals(firstResults, secondResults);
+        final List<MetalDiskInternal> disks = getPlacementDiskWithRequestedCount(REQUESTED_DISK_COUNT);
+        final List<MetalDiskInternal> disksOnSubsequentCall = getPlacementDiskWithRequestedCount(REQUESTED_DISK_COUNT);
+
+        assertEquals(servers.size(), SERVER_COUNT);
+        assertEquals(servers.size(), serversOnSubsequentCall.size());
+        assertEquals(servers, serversOnSubsequentCall);
+        verify(cache, times(2)).getMetalServers();
+
+        assertEquals(disks.size(), REQUESTED_DISK_COUNT);
+        assertEquals(disks.size(), disksOnSubsequentCall.size());
+        assertNotEquals(disks, disksOnSubsequentCall);
+        verify(cache, times(2)).getMetalDisks();
     }
 
     @Test
-    void testPlacementReturnsCorrectCount() {
-        Mockito.when(cache.getMetalServers()).thenReturn(generateMetalServers(SERVER_COUNT));
-
-        PlacementOptions options = PlacementOptions.builder().responseSizeRequested(REQUESTED_SERVER_COUNT).build();
-        List<MetalServerInternal> results = placement.place(options);
-        Assertions.assertEquals(REQUESTED_SERVER_COUNT, results.size());
+    void testPlacementReturnsRequestedCount_WhenAvailableDisksIsMoreThanRequested() {
+        final List<MetalDiskInternal> disks = getPlacementDiskWithRequestedCount(REQUESTED_DISK_COUNT);
+        assertNotNull(disks);
+        assertEquals(REQUESTED_DISK_COUNT, disks.size());
+        verify(cache).getMetalDisks();
     }
 
     @Test
-    void testPlacementWithFewerResultsThanRequested() {
-        List<MetalServerInternal> metalServers = generateMetalServers(SERVER_COUNT);
-        Mockito.when(cache.getMetalServers()).thenReturn(metalServers);
-
-        PlacementOptions options = PlacementOptions.builder().responseSizeRequested(SERVER_COUNT + 1).build();
-        List<MetalServerInternal> results = placement.place(options);
-        Assertions.assertEquals(SERVER_COUNT, results.size());
+    void testPlacementReturnsAllDisks_WhenAvailableDisksIsLessThanRequested() {
+        final List<MetalDiskInternal> disks =
+            getPlacementDiskWithRequestedCount(DISK_COUNT + REQUESTED_DISK_COUNT);
+        assertNotNull(disks);
+        assertEquals(DISK_COUNT, disks.size());
+        verify(cache).getMetalDisks();
     }
 
-    @Test
-    void testPlacementFiltersOutFullServers() {
-        List<MetalServerInternal> metalServers = ImmutableList.of(MetalServerInternal.builder().availableDisks(0).build());
-        Mockito.when(cache.getMetalServers()).thenReturn(metalServers);
-
-        PlacementOptions options = PlacementOptions.builder().responseSizeRequested(SERVER_COUNT).build();
-        List<MetalServerInternal> results = placement.place(options);
-        Assertions.assertEquals(0, results.size());
-    }
-
-    private List<MetalServerInternal> generateMetalServers(int count) {
-        List<MetalServerInternal> servers = new ArrayList<>();
-        for (int i=0; i<count; i++) {
-            servers.add(generateMetalServerWithRandomData());
-        }
-        return servers;
-    }
-
-    private MetalServerInternal generateMetalServerWithRandomData() {
-        return MetalServerInternal
-                .builder()
-                .availableDisks(random.nextInt(1, MAX_SERVER_CAPACITY))
-                .ipAddress(UUID.randomUUID().toString())
-                .build();
+    private List<MetalDiskInternal> getPlacementDiskWithRequestedCount(final int requestedCount) {
+        final PlacementOptions options = PlacementOptions.builder()
+            .diskResponseSizeRequested(requestedCount)
+            .build();
+        return placement.placementDisks(options);
     }
 }
