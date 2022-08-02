@@ -76,13 +76,15 @@ gamma.*.OpConfigInjector.Config.Monitoring.TSD = {
     PerformanceStreamDestination = "IAD";
 };
 
+# CloudWatchInternalAgent configs for gamma
 gamma.*.OpConfigInjector.Config.CloudWatchInternalAgent = {
     ConfigFileName = "amazon-cloudwatch-agent.json";
     CredentialsFilePath = "/var/ebs/turtle_creds/EbsBlacksmithService_EbsBlacksmithServiceCloudWatchAgentRole-v0-gamma_$DOMAIN$/credentials";
     OdinMaterialSetName = "default";
-    Region = "$REALM";
+    Region = "us-east-1";
     RoleARN = "default";
 };
+
 
 # Configs for prod
 <% @regions.each do |region| %>
@@ -97,6 +99,14 @@ gamma.*.OpConfigInjector.Config.CloudWatchInternalAgent = {
       EBSZoneAndRegion.awsregion = "<%= airport_code.upcase %>";
       EBSZoneAndRegion.ec2availabilityzone = "<%= zone_name.upcase %>";
       EBSZoneAndRegion.subzone = "<%= zone_name.upcase %>";
+    };
+
+    prod.<%= zone_name %>.OpConfigInjector.Config.CloudWatchInternalAgent = {
+        ConfigFileName = "amazon-cloudwatch-agent.json";
+        CredentialsFilePath = "/var/ebs/turtle_creds/EbsBlacksmithService_EbsBlacksmithServiceCloudWatchAgentRole-v0-prod_$DOMAIN$/credentials";
+        OdinMaterialSetName = "default";
+        Region = "<%= public_region %>";
+        RoleARN = "default";
     };
   <% end %>
 <% end %>
