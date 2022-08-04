@@ -130,6 +130,23 @@ def configurationFiles = copySpec {
     }
 }
 
+/*
+ Copy static-content to build or private directory.
+*/
+def staticContentFiles = copySpec {
+    from "${brazilGradle.path('package-src-root')}/static-content"
+}
+
+task copyStaticContentToBuild(type: Copy) {
+    into "${brazilGradle.buildDir}/static-content"
+    with staticContentFiles
+}
+
+task copyStaticContentToBuildPrivate(type: Copy) {
+    into "${brazilGradle.buildDir}/private/static-content"
+    with staticContentFiles
+}
+
 def copyConfigurationToBuild = tasks.register('copyConfigurationToBuild', Copy) {
     from("${brazilGradle.path('package-src-root')}") {
         include 'placement-data*.json'
@@ -297,5 +314,5 @@ tasks.named("copyConfigurationToBuildPrivate").configure {
 }
 
 tasks.named("build").configure {
-    dependsOn generateOpConfig, copyConfigurationToBuild, apolloScript
+    dependsOn generateOpConfig, copyConfigurationToBuild, copyStaticContentToBuild, copyStaticContentToBuildPrivate, apolloScript
 }
