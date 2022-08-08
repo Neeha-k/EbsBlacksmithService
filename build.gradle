@@ -45,21 +45,44 @@ checkstyle {
     configFile = file('checkstyle-config.xml')
 }
 
-/*
- Configures the JaCoCo "jacoco" plugin. Remove this if you want to skip
- these checks and report generation.
+def excludeFromCoverage = [
+        '**/dagger/**',
+        '**/health/**',
+        '**/*_MembersInjector.class',
+        '**/Dagger*Component*.class',
+        '**/*Wrapper.class',
+        '**/*Factory.class',
+        '**/Generate*.class'
+]
 
- Set minimum code coverage to fail build, where 0.01 = 1%.
-*/
+coverageReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: excludeFromCoverage)
+        }))
+    }
+    println "Code coverage report available here: file://${brazilGradle.buildDir}/brazil-documentation/coverage/index.html"
+}
+
 check.dependsOn jacocoTestCoverageVerification
 jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: excludeFromCoverage)
+        }))
+    }
+
     violationRules {
         rule {
-            excludes = [
-                    '*.dagger.*'
-            ]
             limit {
-                minimum = 0.00 // TODO: We should change this once we have unit tests
+                counter = 'LINE'
+                minimum = 0.83
+            }
+        }
+        rule {
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.65
             }
         }
     }
@@ -68,7 +91,7 @@ jacocoTestCoverageVerification {
 dependencies {
     def coralGenerator = brazilGradle.tool('CoralGenerator')
     def coralService = brazilGradle.build('CoralService')
-    def coralDagger =  brazilGradle.tool('AmazonCoralDaggerSupportBuildTool')
+    def coralDagger = brazilGradle.tool('AmazonCoralDaggerSupportBuildTool')
     annotationProcessor coralGenerator
     annotationProcessor coralService
     testAnnotationProcessor coralGenerator
