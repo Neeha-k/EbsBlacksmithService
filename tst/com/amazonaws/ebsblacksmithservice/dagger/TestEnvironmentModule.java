@@ -2,17 +2,18 @@ package com.amazonaws.ebsblacksmithservice.dagger;
 
 import static com.amazonaws.ebsblacksmithservice.dagger.modules.EnvironmentModule.APP_NAME;
 
+import amazon.platform.config.AppConfig;
+import amazon.platform.config.AppConfigTree;
+import com.amazon.coral.metrics.MetricsFactory;
+import com.amazon.coral.metrics.NullMetricsFactory;
+import dagger.Module;
+import dagger.Provides;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-import amazon.platform.config.AppConfig;
-import amazon.platform.config.AppConfigTree;
 
 @Module
 public class TestEnvironmentModule {
@@ -53,4 +54,12 @@ public class TestEnvironmentModule {
     static String provideDiskPlacementDataFile(final AppConfigTree appConfigTree) {
         return appConfigTree.findString("blacksmith.diskPlacementDataFile");
     }
+
+    @Provides
+    @Singleton
+    static MetricsFactory provideMetricsFactory() {
+        return new NullMetricsFactory();
+    }
 }
+
+

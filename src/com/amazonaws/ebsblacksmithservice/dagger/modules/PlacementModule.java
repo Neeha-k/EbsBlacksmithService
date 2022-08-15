@@ -1,5 +1,6 @@
 package com.amazonaws.ebsblacksmithservice.dagger.modules;
 
+import com.amazon.coral.metrics.MetricsFactory;
 import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
 import com.amazonaws.ebsblacksmithservice.capacity.CapacityProvider;
 import com.amazonaws.ebsblacksmithservice.capacity.FileReaderCapacityProvider;
@@ -30,8 +31,9 @@ public class PlacementModule {
 
     @Provides
     @Singleton
-    static CapacityCache provideCapacityCache(@Named("FileCapacityProvider") CapacityProvider capacityProvider) {
-        return new CapacityCache(capacityProvider);
+    static CapacityCache provideCapacityCache(@Named("FileCapacityProvider") CapacityProvider capacityProvider,
+            MetricsFactory metricsFactory) {
+        return new CapacityCache(capacityProvider, metricsFactory);
     }
 
     @Provides
