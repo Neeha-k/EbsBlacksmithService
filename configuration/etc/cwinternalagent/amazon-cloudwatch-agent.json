@@ -12,6 +12,24 @@
             "log_group_name": "{apollo_env_full_name}/application.log",
             "log_stream_name": "{hostname}",
             "timezone": "UTC"
+          },
+          {
+            "file_path": "/apollo/env/{apollo_env_alias}/var/output/logs/service_log.*",
+            "log_group_name": "{apollo_env_full_name}/service_log",
+            "log_stream_name": "{hostname}",
+            "timezone": "UTC"
+          },
+          {
+            "file_path": "/apollo/env/{apollo_env_alias}/var/output/logs/PMAdmin.log",
+            "log_group_name": "{apollo_env_full_name}/PMAdmin.log",
+            "log_stream_name": "{hostname}",
+            "timezone": "UTC"
+          },
+          {
+            "file_path": "/apollo/env/{apollo_env_alias}/var/output/logs/amazon-cloudwatch-agent.log",
+            "log_group_name": "{apollo_env_full_name}/amazon-cloudwatch-agent.log",
+            "log_stream_name": "{hostname}",
+            "timezone": "UTC"
           }
         ]
       }
