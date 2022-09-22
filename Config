@@ -57,6 +57,9 @@ package.EbsBlacksmithService = {
             # Turtle dependencies
             EbsTurtleJavaRuntimeSupport = 2.0;
 
+            # Heimdall
+            HeimdallSupportCoral = 4.0;
+
             # We need this adapter to transfer SDK 2 AwsCredentialProvider to SDK 1 version
             AwsJavaSdk-V1V2CredentialsProviderAdapter = 1.0;
 
@@ -81,6 +84,10 @@ package.EbsBlacksmithService = {
             #OpConfigInjector Setup
             Ruby = default;
             OpConfigInjector = 1.0;
+
+            # Heimdall
+            HeimdallPusher = 1.3;
+            HeimdallConfig-EbsBlacksmithService = 1.0;
         };
     };
 

@@ -20,6 +20,7 @@ import dagger.Provides;
 import amazon.platform.tools.ApolloEnvironmentInfo;
 import amazon.platform.tools.ApolloEnvironmentInfo.EnvironmentRootUndefinedException;
 
+import com.amazon.ec2.heimdall.HeimdallCoralHandler;
 import com.amazon.coral.bobcat.Bobcat3EndpointConfig;
 import com.amazon.coral.bobcat.BobcatServer;
 import com.amazon.coral.metrics.MetricsFactory;
@@ -140,6 +141,7 @@ public class CoralModule {
         handlerChain.add(new ServiceHandler("EbsBlacksmithService"));
         handlerChain.add(new HttpAwsJson11Handler());
         handlerChain.add(new HttpRpcHandler());
+        handlerChain.add(new HeimdallCoralHandler());
         handlerChain.add(new ModelHandler());
 
         // Authentication chain needs to come after wire protocols and before Activity handler

@@ -2,6 +2,7 @@
 <Configuration status="DEBUG">
     <Properties>
         <Property name="log-path">${sys:root}/var/output/logs</Property>
+        <Property name="heimdall-log-path">${sys:root}/var/output/heimdall-logs</Property>
     </Properties>
     <Appenders>
         <AmazonRollingRandomAccessFile name="APPLICATION"
@@ -10,14 +11,23 @@
                 <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %highlight{[%p]} %X{RequestId} (%t) %c: %m%n</pattern>
             </PatternLayout>
         </AmazonRollingRandomAccessFile>
+        <!--  Configure a per minute appender for JSON logs needed by Heimdall -->
+        <AmazonRollingRandomAccessFile name="HEIMDALL"
+                                       filePattern="${heimdall-log-path}/heimdall.json.log.%d{yyyy-MM-dd-HH-mm}">
+            <HeimdallJsonLayout mdcWhiteList="request-id,method,tag"/>
+        </AmazonRollingRandomAccessFile>
     </Appenders>
 
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="APPLICATION"/>
+            <AppenderRef ref="HEIMDALL"/>
         </Root>
         <!-- Disables wire logging -->
         <Logger name="WIRE" level="OFF" />
+        <Logger name="com.amazon.ec2.heimdall.HeimdallRequest" level="DEBUG" additivity="false">
+            <AppenderRef ref="HEIMDALL"/>
+        </Logger>
         <Logger name="com.amazon.coral" level="WARN"/>
         <Logger name="com.amazon.coral.reflect" level="ERROR"/>
         <Logger name="org.apache" level="WARN"/>

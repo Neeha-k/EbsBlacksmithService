@@ -2,6 +2,7 @@
 <Configuration status="DEBUG">
     <Properties>
         <Property name="log-path">${sys:root}/var/output/logs</Property>
+        <Property name="heimdall-log-path">${sys:root}/var/output/heimdall-logs</Property>
     </Properties>
     <Appenders>
         <AmazonRollingRandomAccessFile name="APPLICATION"
@@ -18,11 +19,17 @@
                 <pattern>%m{nolookups}%n</pattern>
             </PatternLayout>
         </AmazonRollingRandomAccessFile>
+        <!--  Configure a per minute appender for JSON logs needed by Heimdall -->
+        <AmazonRollingRandomAccessFile name="HEIMDALL"
+                                       filePattern="${heimdall-log-path}/heimdall.json.log.%d{yyyy-MM-dd-HH-mm}">
+            <HeimdallJsonLayout mdcWhiteList="request-id,method,tag"/>
+        </AmazonRollingRandomAccessFile>
     </Appenders>
 
     <Loggers>
         <Root level="DEBUG">
             <AppenderRef ref="APPLICATION"/>
+            <AppenderRef ref="HEIMDALL"/>
         </Root>
         <!-- Since additivity is false, wire logging will not go to the root logger. This prevents
              wire logging from being interspersed with application logging.
@@ -32,6 +39,9 @@
         </Logger>
         <Logger name="com.amazon.coral.service.RequestLoggingInterceptor" level="TRACE" additivity="false">
             <AppenderRef ref="REQUESTLOG" level="TRACE"/>
+        </Logger>
+        <Logger name="com.amazon.ec2.heimdall.HeimdallRequest" level="DEBUG" additivity="false">
+            <AppenderRef ref="HEIMDALL"/>
         </Logger>
         <Logger name="com.amazon.coral" level="WARN"/>
         <Logger name="com.amazon.coral.reflect" level="ERROR"/>

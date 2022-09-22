@@ -11,7 +11,8 @@
     "ProcessManager",
     "LogPuller",
     "EBSZoneAndRegion",
-    "CloudWatchInternalAgent"
+    "CloudWatchInternalAgent",
+    "Heimdall"
 );
 
 # OpConfigList for IDM as we want to have STACK_ID in EBSZoneAndRegion config set which is only set in IDM apollo-shim
@@ -85,6 +86,12 @@ gamma.*.OpConfigInjector.Config.CloudWatchInternalAgent = {
     RoleARN = "default";
 };
 
+# Heimdall configs for gamma
+gamma.*.OpConfigInjector.Config.Heimdall = {
+    EC2Region = iad;
+    Stage = gamma;
+    EnvironmentName = "EbsBlacksmithServiceGamma";
+};
 
 # Configs for prod
 <% @regions.each do |region| %>
@@ -107,6 +114,12 @@ gamma.*.OpConfigInjector.Config.CloudWatchInternalAgent = {
         OdinMaterialSetName = "default";
         Region = "<%= public_region %>";
         RoleARN = "default";
+    };
+
+    prod.<%= zone_name %>.OpConfigInjector.Config.Heimdall += {
+        EC2Region = "<%= region.region_name -%>";
+        Stage = "prod";
+        EnvironmentName = "EbsBlacksmithService";
     };
   <% end %>
 <% end %>
