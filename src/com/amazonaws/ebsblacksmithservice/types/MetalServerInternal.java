@@ -13,6 +13,8 @@ import com.amazonaws.ebsblacksmithservice.MetalServer;
 @Getter
 @Jacksonized
 public class MetalServerInternal {
+    private static final String COLON = ":";
+    private static final int SERVER_IP_INDEX = 0;
     private final String serverAddress;
 
     public static List<MetalServer> toCoralModel(
@@ -28,5 +30,17 @@ public class MetalServerInternal {
         return MetalServer.builder()
             .withIpAddress(metalServerInternal.getServerAddress())
             .build();
+    }
+
+    public boolean hasIp(final String ipAddress) {
+        return getIp().equals(ipAddress);
+    }
+
+    public String getIp() {
+        final int separationIndexOfIpAndPort = this.serverAddress.indexOf(COLON);
+        if (separationIndexOfIpAndPort < 0) {
+            throw new RuntimeException(String.format("Invalid server address: %s", this.serverAddress));
+        }
+        return this.serverAddress.substring(0, separationIndexOfIpAndPort);
     }
 }

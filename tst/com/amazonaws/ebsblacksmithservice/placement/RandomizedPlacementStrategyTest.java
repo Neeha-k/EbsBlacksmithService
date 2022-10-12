@@ -42,8 +42,10 @@ public class RandomizedPlacementStrategyTest {
 
     @Test
     void testSubsequentCallsReturnsDifferentOrdering() {
-        final List<MetalServerInternal> servers = placement.getAllMetalServers();
-        final List<MetalServerInternal> serversOnSubsequentCall = placement.getAllMetalServers();
+        final PlacementOptions options = PlacementOptions.builder()
+            .build();
+        final List<MetalServerInternal> servers = placement.placementServers(options);
+        final List<MetalServerInternal> serversOnSubsequentCall = placement.placementServers(options);
 
         final List<MetalDiskInternal> disks = getPlacementDiskWithRequestedCount(REQUESTED_DISK_COUNT);
         final List<MetalDiskInternal> disksOnSubsequentCall = getPlacementDiskWithRequestedCount(REQUESTED_DISK_COUNT);

@@ -2,6 +2,7 @@ package com.amazonaws.ebsblacksmithservice.capacity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -65,5 +66,16 @@ public class FileReaderCapacityProviderTest {
         assertEquals("3FJM539T001", metalDiskInternals.get(0).getLogicalDiskId());
         assertEquals("127.0.1.1:5684", metalDiskInternals.get(1).getServerAddress());
         assertEquals("3FJM539T002", metalDiskInternals.get(1).getLogicalDiskId());
+    }
+
+    @Test
+    void testUnknownFilepath() {
+        final FileReaderCapacityProvider capacityProvider =
+            new FileReaderCapacityProvider(
+                "tst/data/unknown-servers.json",
+                "tst/data/unknown-disk.json",
+                objectMapper);
+
+        assertThrows(RuntimeException.class, capacityProvider::loadServerData);
     }
 }

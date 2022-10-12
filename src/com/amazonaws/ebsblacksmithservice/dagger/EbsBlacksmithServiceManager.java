@@ -1,18 +1,21 @@
 package com.amazonaws.ebsblacksmithservice.dagger;
 
-import dagger.Binds;
-import dagger.Lazy;
-import dagger.Module;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import com.google.common.collect.ImmutableList;
+
+import dagger.Binds;
+import dagger.Lazy;
+import dagger.Module;
 
 import com.amazon.coral.bobcat.BobcatServer;
 import com.amazon.coral.dagger.service.ServiceManager;
 import com.amazon.coral.service.EnvironmentChecker;
 import com.amazon.ebs.dfdd.DfddHeartbeatHelper;
-import com.google.common.collect.ImmutableList;
+
+import com.amazonaws.ebsblacksmithservice.dagger.modules.EagerSingletons;
 
 @Singleton
 public class EbsBlacksmithServiceManager implements ServiceManager {
@@ -27,20 +30,23 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
     private final DfddHeartbeatHelper secureDfddHeartbeatHelper;
     private final EndpointManager endpointManager;
 
+    private final EagerSingletons eagerSingletons;
+
     @Inject
     EbsBlacksmithServiceManager(
-            Lazy<EnvironmentChecker> lazyEnvironmentChecker,
-            @Named("InsecureBobcat") BobcatServer insecureBobcatServer,
-            @Named("SecureBobcat") BobcatServer secureBobcatServer,
-            @Named("DfddHeartbeatHelperRegular") DfddHeartbeatHelper insecureDfddHeartbeatHelper,
-            @Named("DfddHeartbeatHelperSecure") DfddHeartbeatHelper secureDfddHeartbeatHelper
-    ) {
+        Lazy<EnvironmentChecker> lazyEnvironmentChecker,
+        @Named("InsecureBobcat") BobcatServer insecureBobcatServer,
+        @Named("SecureBobcat") BobcatServer secureBobcatServer,
+        @Named("DfddHeartbeatHelperRegular") DfddHeartbeatHelper insecureDfddHeartbeatHelper,
+        @Named("DfddHeartbeatHelperSecure") DfddHeartbeatHelper secureDfddHeartbeatHelper,
+        EagerSingletons eagerSingletons) {
         super();
         this.lazyEnvironmentChecker = lazyEnvironmentChecker;
         this.insecureDfddHeartbeatHelper = insecureDfddHeartbeatHelper;
         this.secureDfddHeartbeatHelper = secureDfddHeartbeatHelper;
 
         this.endpointManager = new EndpointManager(ImmutableList.of(secureBobcatServer, insecureBobcatServer));
+        this.eagerSingletons = eagerSingletons;
     }
 
     @Override
@@ -54,6 +60,7 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
 
     @Override
     public void start() throws Exception {
+        eagerSingletons.init();
         endpointManager.start();
         insecureDfddHeartbeatHelper.startHeartbeating();
         secureDfddHeartbeatHelper.startHeartbeating();

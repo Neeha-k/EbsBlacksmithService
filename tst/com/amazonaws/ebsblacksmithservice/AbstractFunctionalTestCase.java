@@ -1,14 +1,15 @@
 package com.amazonaws.ebsblacksmithservice;
 
-import com.amazonaws.ebsblacksmithservice.activity.GetPlacementForMetalVolumeActivity;
-import com.amazonaws.ebsblacksmithservice.dagger.DaggerGeneratedCoralComponent;
-import com.amazonaws.ebsblacksmithservice.dagger.GeneratedCoralComponent;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import com.amazonaws.ebsblacksmithservice.activity.GetPlacementForMetalVolumeActivity;
+import com.amazonaws.ebsblacksmithservice.dagger.DaggerGeneratedCoralComponent;
+import com.amazonaws.ebsblacksmithservice.dagger.GeneratedCoralComponent;
 
 @ExtendWith(MockitoExtension.class)
 public class AbstractFunctionalTestCase {
@@ -25,8 +26,9 @@ public class AbstractFunctionalTestCase {
 
     @BeforeEach
     public void setUp() {
+        generatedCoralComponent.provideRandomizedPlacementStrategy();
+        generatedCoralComponent.provideTargetingPlacementStrategy();
         this.activity = generatedCoralComponent.providerGetPlacementForMetalVolumeActivity();
         assertNotNull(this.activity);
     }
-
 }

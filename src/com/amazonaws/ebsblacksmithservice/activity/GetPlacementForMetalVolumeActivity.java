@@ -18,15 +18,14 @@ import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeRequest;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeResponse;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementOptions;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementStrategy;
+import com.amazonaws.ebsblacksmithservice.placement.PlacementStrategyDecider;
+import com.amazonaws.ebsblacksmithservice.placement.TargetingOptionsInternal;
 import com.amazonaws.ebsblacksmithservice.types.MetalDiskInternal;
 import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
 
 @Service("EbsBlacksmithService")
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class GetPlacementForMetalVolumeActivity extends Activity {
-
-    @Inject
-    PlacementStrategy placementStrategy;
 
     // For now we can hardcode the recommendation response size to simplify our external facing API.
     // In the future, we will want to tune the number of responses returned by blacksmith based upon our
@@ -43,12 +42,17 @@ public class GetPlacementForMetalVolumeActivity extends Activity {
     @LogRequests
     public GetPlacementForMetalVolumeResponse enact(GetPlacementForMetalVolumeRequest request) {
 
-        final List<MetalServerInternal> servers = placementStrategy.getAllMetalServers();
+        final PlacementOptions placementOptions = PlacementOptions.builder()
+            .diskResponseSizeRequested(RESPONSE_SIZE)
+            .targetingOptions(
+                new TargetingOptionsInternal(request.getTargetingOptions()))
+            .build();
 
-        final List<MetalDiskInternal> disks = placementStrategy.placementDisks(
-            PlacementOptions.builder()
-                .diskResponseSizeRequested(RESPONSE_SIZE)
-                .build());
+        final PlacementStrategy placementStrategy = PlacementStrategyDecider.getPlacementStrategy(placementOptions);
+
+        final List<MetalServerInternal> servers = placementStrategy.placementServers(placementOptions);
+
+        final List<MetalDiskInternal> disks = placementStrategy.placementDisks(placementOptions);
 
         publishMetricsForRecommendedDiskSize(disks.size());
 
