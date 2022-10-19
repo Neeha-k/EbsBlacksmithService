@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.util.Collections;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.amazonaws.ebsblacksmithservice.AbstractFunctionalTestCase;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeRequest;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeResponse;
+import com.amazonaws.ebsblacksmithservice.ServerDescriptor;
 import com.amazonaws.ebsblacksmithservice.TargetingOptions;
 
 public class GetPlacementForMetalVolumeActivityTest extends AbstractFunctionalTestCase {
@@ -32,6 +34,11 @@ public class GetPlacementForMetalVolumeActivityTest extends AbstractFunctionalTe
 
     @Test
     public void testEnactWithTargetingOptions() {
+        final ServerDescriptor targetPrimaryServerWithGammaIp =
+            ServerDescriptor.builder()
+                .withServerId(UUID.randomUUID().toString())
+                .withIpAddresses(Collections.singletonList(GAMMA_TARGET_SERVER_IP))
+                .build();
         final GetPlacementForMetalVolumeResponse response =
             this.activity.enact(GetPlacementForMetalVolumeRequest
                 .builder()
@@ -39,7 +46,7 @@ public class GetPlacementForMetalVolumeActivityTest extends AbstractFunctionalTe
                 .withCustomerId(UUID.randomUUID().toString())
                 .withTargetingOptions(
                     TargetingOptions.builder()
-                        .withTargetServerIp(GAMMA_TARGET_SERVER_IP)
+                        .withTargetPrimaryServer(targetPrimaryServerWithGammaIp)
                         .build())
                 .build());
         assertNotNull(response);

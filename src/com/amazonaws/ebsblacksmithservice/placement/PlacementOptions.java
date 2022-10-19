@@ -1,5 +1,6 @@
 package com.amazonaws.ebsblacksmithservice.placement;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
@@ -15,11 +16,11 @@ public class PlacementOptions {
         return Optional.ofNullable(this.targetingOptions);
     }
 
-    public Optional<String> getTargetServerIp() {
-        return getTargetingOptions().flatMap(TargetingOptionsInternal::getServerIp);
+    public Optional<List<String>> getTargetServerIpList() {
+        return getTargetingOptions().flatMap(TargetingOptionsInternal::getServerIpList);
     }
 
     public boolean hasTargetingOptionForPlacement() {
-        return getTargetServerIp().isPresent();
+        return getTargetServerIpList().isPresent();
     }
 }

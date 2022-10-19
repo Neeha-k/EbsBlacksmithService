@@ -28,10 +28,10 @@ public class TargetingPlacementStrategy implements PlacementStrategy {
         var servers = cache.getMetalServers();
 
         final List<MetalServerInternal> targetedServers =
-            options.getTargetServerIp()
-                .map(targetServerIp -> servers
+            options.getTargetServerIpList()
+                .map(targetServerIpList -> servers
                     .stream()
-                    .filter(server -> server.hasIp(targetServerIp))
+                    .filter(server -> targetServerIpList.contains(server.getIp()))
                     .collect(Collectors.toList()))
                 .orElse(servers);
         Collections.shuffle(targetedServers);
@@ -43,10 +43,10 @@ public class TargetingPlacementStrategy implements PlacementStrategy {
         var disks = cache.getMetalDisks();
 
         final List<MetalDiskInternal> targetedDisks =
-            options.getTargetServerIp()
-                .map(targetServerIp -> disks
+            options.getTargetServerIpList()
+                .map(targetServerIpList -> disks
                     .stream()
-                    .filter(disk -> disk.hasDiskServerIp(targetServerIp)))
+                    .filter(disk -> targetServerIpList.contains(disk.getDiskServerIp())))
                 .orElse(disks.stream())
                 .limit(options.getDiskResponseSizeRequested())
                 .collect(Collectors.toList());

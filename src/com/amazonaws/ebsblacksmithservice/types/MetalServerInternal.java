@@ -32,10 +32,6 @@ public class MetalServerInternal {
             .build();
     }
 
-    public boolean hasIp(final String ipAddress) {
-        return getIp().equals(ipAddress);
-    }
-
     public String getIp() {
         final int separationIndexOfIpAndPort = this.serverAddress.indexOf(COLON);
         if (separationIndexOfIpAndPort < 0) {

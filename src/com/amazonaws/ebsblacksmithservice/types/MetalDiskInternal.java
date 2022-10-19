@@ -37,13 +37,6 @@ public class MetalDiskInternal {
             .build();
     }
 
-    public boolean hasDiskServerIp(final String ipAddress) {
-        return MetalServerInternal.builder()
-            .serverAddress(this.serverAddress)
-            .build()
-            .hasIp(ipAddress);
-    }
-
     public String getDiskServerIp() {
         return MetalServerInternal.builder()
             .serverAddress(this.serverAddress)

@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import com.amazonaws.ebsblacksmithservice.ServerDescriptor;
 import com.amazonaws.ebsblacksmithservice.TargetingOptions;
 import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
 import com.amazonaws.ebsblacksmithservice.types.MetalDiskInternal;
@@ -44,60 +45,87 @@ public class TargetingPlacementStrategyTest {
 
     @Test
     void testPlacementWithRandomTargetServerIpInTargetingOptions() {
+        final List<MetalServerInternal> servers =
+            invokeWithPrimaryServerIp(Collections.singletonList(UUID.randomUUID().toString()));
+        assertPlacementServerResponse(servers, 0);
+    }
+
+    @Test
+    void testPlacementWithEmptyTargetServerIpInTargetingOptions() {
+        final List<MetalServerInternal> servers =
+            invokeWithPrimaryServerIp(Collections.emptyList());
+        assertPlacementServerResponse(servers, SERVER_COUNT);
+    }
+
+    @Test
+    void testPlacementWithNoServerDescriptorInTargetingOptions() {
         final PlacementOptions options = PlacementOptions.builder()
             .targetingOptions(new TargetingOptionsInternal(
                 TargetingOptions.builder()
-                    .withTargetServerIp(UUID.randomUUID().toString())
                     .build()))
             .build();
         final List<MetalServerInternal> servers = placement.placementServers(options);
-        assertNotNull(servers);
-        assertTrue(servers.isEmpty());
+        assertPlacementServerResponse(servers, SERVER_COUNT);
     }
 
     @Test
     void testPlacementWithValidServerIpInTargetingOptions() {
-        final List<MetalServerInternal> metalServers = cache.getMetalServers();
-        final PlacementOptions options = PlacementOptions.builder()
-            .targetingOptions(new TargetingOptionsInternal(
-                TargetingOptions.builder()
-                    .withTargetServerIp(metalServers.get(0).getIp())
-                    .build()))
-            .build();
-        final List<MetalServerInternal> servers = placement.placementServers(options);
-        assertNotNull(servers);
-        assertEquals(servers.size(), 1);
-    }
 
-    @Test
-    void testPlacementWithValidDiskServerIpInTargetingOptions() {
-        final List<MetalDiskInternal> metalDisks = cache.getMetalDisks();
-        final PlacementOptions options = PlacementOptions.builder()
-            .targetingOptions(new TargetingOptionsInternal(
-                TargetingOptions.builder()
-                    .withTargetServerIp(metalDisks.get(0).getDiskServerIp())
-                    .build()))
-            .diskResponseSizeRequested(REQUESTED_DISK_COUNT)
-            .build();
-        final List<MetalDiskInternal> disks = placement.placementDisks(options);
-        assertNotNull(disks);
-        assertEquals(disks.size(), 1);
+        final List<MetalServerInternal> metalServers = cache.getMetalServers();
+        final List<MetalServerInternal> servers =
+            invokeWithPrimaryServerIp(Collections.singletonList(metalServers.get(0).getIp()));
+        assertPlacementServerResponse(servers, 1);
     }
 
     @Test
     void testPlacementWithInvalidServerAddressAndTargetingOptions() {
+
         when(cache.getMetalServers()).thenReturn(
             Collections.singletonList(
                 MetalServerInternal.builder()
                     .serverAddress(UUID.randomUUID().toString())
                     .build()));
+        final RuntimeException exception =
+            assertThrows(RuntimeException.class,
+                () -> invokeWithPrimaryServerIp(Collections.singletonList(UUID.randomUUID().toString())));
+        assertTrue(exception.getMessage().contains("Invalid server address"));
+    }
+
+    @Test
+    void testPlacementWithValidDiskServerIpInTargetingOptions() {
+        final List<MetalDiskInternal> metalDisks = cache.getMetalDisks();
+        ServerDescriptor targetPrimaryServerWithValidDiskId = ServerDescriptor.builder()
+            .withServerId(UUID.randomUUID().toString())
+            .withIpAddresses(Collections.singletonList(metalDisks.get(0).getDiskServerIp()))
+            .build();
         final PlacementOptions options = PlacementOptions.builder()
             .targetingOptions(new TargetingOptionsInternal(
                 TargetingOptions.builder()
-                    .withTargetServerIp(UUID.randomUUID().toString())
+                    .withTargetPrimaryServer(targetPrimaryServerWithValidDiskId)
+                    .build()))
+            .diskResponseSizeRequested(REQUESTED_DISK_COUNT)
+            .build();
+        final List<MetalDiskInternal> disks = placement.placementDisks(options);
+        assertNotNull(disks);
+        assertEquals(1, disks.size());
+    }
+
+    private List<MetalServerInternal> invokeWithPrimaryServerIp(final List<String> primaryServerIpList) {
+        ServerDescriptor targetPrimaryServer = ServerDescriptor.builder()
+            .withServerId(UUID.randomUUID().toString())
+            .withIpAddresses(primaryServerIpList)
+            .build();
+        final PlacementOptions options = PlacementOptions.builder()
+            .targetingOptions(new TargetingOptionsInternal(
+                TargetingOptions.builder()
+                    .withTargetPrimaryServer(targetPrimaryServer)
                     .build()))
             .build();
-        final RuntimeException exception = assertThrows(RuntimeException.class, () -> placement.placementServers(options));
-        assertTrue(exception.getMessage().contains("Invalid server address"));
+        return placement.placementServers(options);
+    }
+
+    private void assertPlacementServerResponse(final List<MetalServerInternal> servers, final int count) {
+        assertNotNull(servers);
+        assertEquals(count, servers.size());
     }
 }
