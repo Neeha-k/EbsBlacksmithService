@@ -17,7 +17,7 @@ import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeResponse;
 import com.amazonaws.ebsblacksmithservice.ServerDescriptor;
 import com.amazonaws.ebsblacksmithservice.TargetingOptions;
 
-public class GetPlacementForMetalVolumeActivityTest extends AbstractFunctionalTestCase {
+public class GetPlacementForMetalVolumeActivityFunctionalTest extends AbstractFunctionalTestCase {
 
     public static final String GAMMA_TARGET_SERVER_IP = "30.133.7.151";
 

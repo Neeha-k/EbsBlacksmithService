@@ -94,24 +94,16 @@ public class TargetingPlacementStrategyTest {
     @Test
     void testPlacementWithValidDiskServerIpInTargetingOptions() {
         final List<MetalDiskInternal> metalDisks = cache.getMetalDisks();
-        ServerDescriptor targetPrimaryServerWithValidDiskId = ServerDescriptor.builder()
-            .withServerId(UUID.randomUUID().toString())
-            .withIpAddresses(Collections.singletonList(metalDisks.get(0).getDiskServerIp()))
-            .build();
-        final PlacementOptions options = PlacementOptions.builder()
-            .targetingOptions(new TargetingOptionsInternal(
-                TargetingOptions.builder()
-                    .withTargetPrimaryServer(targetPrimaryServerWithValidDiskId)
-                    .build()))
-            .diskResponseSizeRequested(REQUESTED_DISK_COUNT)
-            .build();
-        final List<MetalDiskInternal> disks = placement.placementDisks(options);
-        assertNotNull(disks);
-        assertEquals(1, disks.size());
+        assertPlacementDiskResponse(metalDisks.get(0).getDiskServerIp(), 1);
+    }
+
+    @Test
+    void testPlacementWithInvalidDiskServerIpInTargetingOptions() {
+        assertPlacementDiskResponse(UUID.randomUUID().toString(), 0);
     }
 
     private List<MetalServerInternal> invokeWithPrimaryServerIp(final List<String> primaryServerIpList) {
-        ServerDescriptor targetPrimaryServer = ServerDescriptor.builder()
+        final ServerDescriptor targetPrimaryServer = ServerDescriptor.builder()
             .withServerId(UUID.randomUUID().toString())
             .withIpAddresses(primaryServerIpList)
             .build();
@@ -127,5 +119,23 @@ public class TargetingPlacementStrategyTest {
     private void assertPlacementServerResponse(final List<MetalServerInternal> servers, final int count) {
         assertNotNull(servers);
         assertEquals(count, servers.size());
+    }
+
+    private void assertPlacementDiskResponse(final String targetDiskId, final int count) {
+        final ServerDescriptor targetPrimaryServerWithValidDiskServerIp =
+            ServerDescriptor.builder()
+                .withServerId(UUID.randomUUID().toString())
+                .withIpAddresses(Collections.singletonList(targetDiskId))
+                .build();
+        final PlacementOptions options = PlacementOptions.builder()
+            .targetingOptions(new TargetingOptionsInternal(
+                TargetingOptions.builder()
+                    .withTargetPrimaryServer(targetPrimaryServerWithValidDiskServerIp)
+                    .build()))
+            .diskResponseSizeRequested(REQUESTED_DISK_COUNT)
+            .build();
+        final List<MetalDiskInternal> disks = placement.placementDisks(options);
+        assertNotNull(disks);
+        assertEquals(count, disks.size());
     }
 }

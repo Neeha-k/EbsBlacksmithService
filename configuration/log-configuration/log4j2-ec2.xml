@@ -18,6 +18,9 @@
         </Root>
         <!-- Disables wire logging -->
         <Logger name="WIRE" level="OFF" />
+        <Logger name="com.amazon.coral.service.RequestLoggingInterceptor" level="TRACE" additivity="false">
+            <AppenderRef ref="REQUESTLOG" level="TRACE"/>
+        </Logger>
         <Logger name="com.amazon.coral" level="WARN"/>
         <Logger name="com.amazon.coral.reflect" level="ERROR"/>
         <Logger name="org.apache" level="WARN"/>

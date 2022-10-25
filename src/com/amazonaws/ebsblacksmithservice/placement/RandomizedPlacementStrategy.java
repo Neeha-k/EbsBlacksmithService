@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.amazonaws.ebsblacksmithservice.capacity.CapacityCache;
 import com.amazonaws.ebsblacksmithservice.types.MetalDiskInternal;
 import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
@@ -15,6 +17,7 @@ import com.amazonaws.ebsblacksmithservice.types.MetalServerInternal;
  * This placement strategy returns all metal servers and list of disk in a random order.
  */
 
+@Slf4j
 public class RandomizedPlacementStrategy implements PlacementStrategy {
     private final CapacityCache cache;
 
@@ -32,6 +35,7 @@ public class RandomizedPlacementStrategy implements PlacementStrategy {
 
     @Override
     public List<MetalDiskInternal> placementDisks(final PlacementOptions options) {
+        log.info("Randomized placement strategy triggered");
         var disks = cache.getMetalDisks();
         Collections.shuffle(disks);
         return disks

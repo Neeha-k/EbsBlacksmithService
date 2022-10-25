@@ -21,5 +21,4 @@ public class TargetingOptionsInternal {
         }
         return Optional.of(this.serverIpList);
     }
-
 }

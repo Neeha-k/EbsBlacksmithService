@@ -16,6 +16,8 @@ import com.amazon.coral.validate.Validated;
 
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeRequest;
 import com.amazonaws.ebsblacksmithservice.GetPlacementForMetalVolumeResponse;
+import com.amazonaws.ebsblacksmithservice.InsufficientCapacityException;
+import com.amazonaws.ebsblacksmithservice.InvalidArgumentException;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementOptions;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementStrategy;
 import com.amazonaws.ebsblacksmithservice.placement.PlacementStrategyDecider;
@@ -36,12 +38,12 @@ public class GetPlacementForMetalVolumeActivity extends Activity {
     private static final String RECOMMENDATIONS_MISSING = "RecommendationsMissing";
     private static final String RECOMMENDATIONS_ACTUAL = "RecommendationsActual";
     private static final String RECOMMENDATIONS_MAX = "RecommendationsMax";
+    private static final String INSUFFICIENT_CAPACITY = "InsufficientCapacity";
 
     @Operation("GetPlacementForMetalVolume")
     @Validated
     @LogRequests
     public GetPlacementForMetalVolumeResponse enact(GetPlacementForMetalVolumeRequest request) {
-
         final PlacementOptions placementOptions = PlacementOptions.builder()
             .diskResponseSizeRequested(RESPONSE_SIZE)
             .targetingOptions(
@@ -53,6 +55,8 @@ public class GetPlacementForMetalVolumeActivity extends Activity {
         final List<MetalServerInternal> servers = placementStrategy.placementServers(placementOptions);
 
         final List<MetalDiskInternal> disks = placementStrategy.placementDisks(placementOptions);
+
+        validatePlacementResponse(servers, disks, placementOptions, request.getVolumeId());
 
         publishMetricsForRecommendedDiskSize(disks.size());
 
@@ -69,5 +73,22 @@ public class GetPlacementForMetalVolumeActivity extends Activity {
         }
         metrics.addCount(RECOMMENDATIONS_ACTUAL, recommendedDiskSize, Unit.ONE);
         metrics.addCount(RECOMMENDATIONS_MAX, RESPONSE_SIZE, Unit.ONE);
+    }
+
+    private void validatePlacementResponse(
+        final List<MetalServerInternal> placementServers,
+        final List<MetalDiskInternal> placementDisk,
+        final PlacementOptions placementOptions,
+        final String volumeId) {
+        if (placementOptions.hasTargetingOptionForPlacement() && placementServers.isEmpty()) {
+            throw new InvalidArgumentException(String.format(
+                "No available server found for placement of volume: %s with option: %s", volumeId, placementOptions));
+        }
+        if (placementDisk.isEmpty()) {
+            final Metrics metrics = getMetrics();
+            metrics.addCount(INSUFFICIENT_CAPACITY, true);
+            throw new InsufficientCapacityException(String.format(
+                "No available disk found for placement of volume: %s with option: %s", volumeId, placementOptions));
+        }
     }
 }
