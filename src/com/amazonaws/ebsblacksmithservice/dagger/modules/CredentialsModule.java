@@ -11,8 +11,6 @@ import javax.inject.Singleton;
 
 import com.amazonaws.ebs.auth.TurtleAWSCredentialsProvider;
 import com.amazonaws.ebsblacksmithservice.types.Domain;
-import com.amazon.coral.metrics.MetricsFactory;
-import com.amazonaws.rip.models.region.IRegion;
 
 @Module
 public class CredentialsModule {

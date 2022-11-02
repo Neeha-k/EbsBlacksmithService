@@ -40,10 +40,14 @@ public class TestDataGenerator {
     }
 
     private static MetalDiskInternal generateMetalDiskWithRandomData() {
+        return generateMetalDiskWithServerAddress(generateRandomServerAddress());
+    }
+
+    public static MetalDiskInternal generateMetalDiskWithServerAddress(String serverAddress) {
         return MetalDiskInternal
             .builder()
             .logicalDiskId(UUID.randomUUID().toString())
-            .serverAddress(generateRandomServerAddress())
+            .serverAddress(serverAddress)
             .build();
     }
 

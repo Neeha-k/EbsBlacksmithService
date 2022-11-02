@@ -3,7 +3,6 @@ package com.amazonaws.ebsblacksmithservice.placement;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

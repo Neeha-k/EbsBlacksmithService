@@ -1,6 +1,5 @@
 package com.amazonaws.ebsblacksmithservice.dagger.modules;
 
-import com.amazonaws.ebsblacksmithservice.dagger.modules.CredentialsModule;
 import com.amazonaws.ebsblacksmithservice.types.Domain;
 
 import org.junit.jupiter.api.Assertions;

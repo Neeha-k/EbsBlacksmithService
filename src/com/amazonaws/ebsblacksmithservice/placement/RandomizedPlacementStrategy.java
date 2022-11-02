@@ -26,6 +26,10 @@ public class RandomizedPlacementStrategy implements PlacementStrategy {
         registerPlacementStrategy(RANDOM, this);
     }
 
+
+    /*
+     * Not filtering servers to allow delete volume call to execute on all servers.
+     */
     @Override
     public List<MetalServerInternal> placementServers(final PlacementOptions options) {
         var servers = cache.getMetalServers();
@@ -40,6 +44,7 @@ public class RandomizedPlacementStrategy implements PlacementStrategy {
         Collections.shuffle(disks);
         return disks
             .stream()
+            .filter(disk -> !TARGETED_ONLY_PLACEMENT_SERVER_ADDRESSES.contains(disk.getServerAddress()))
             .limit(options.getDiskResponseSizeRequested())
             .collect(Collectors.toList());
     }

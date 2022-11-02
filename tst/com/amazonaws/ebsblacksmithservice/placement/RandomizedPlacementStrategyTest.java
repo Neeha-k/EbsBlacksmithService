@@ -2,9 +2,11 @@ package com.amazonaws.ebsblacksmithservice.placement;
 
 import static com.amazonaws.ebsblacksmithservice.util.TestDataGenerator.generateMetalDisks;
 import static com.amazonaws.ebsblacksmithservice.util.TestDataGenerator.generateMetalServers;
+import static com.amazonaws.ebsblacksmithservice.util.TestDataGenerator.generateMetalDiskWithServerAddress;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,6 +14,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,6 +78,24 @@ public class RandomizedPlacementStrategyTest {
             getPlacementDiskWithRequestedCount(DISK_COUNT + REQUESTED_DISK_COUNT);
         assertNotNull(disks);
         assertEquals(DISK_COUNT, disks.size());
+        verify(cache).getMetalDisks();
+    }
+
+    @Test
+    void testPlacementReturnsDisksExcludingTargetedOnlyServer() {
+        List<MetalDiskInternal> generatedDisks = generateMetalDisks(REQUESTED_DISK_COUNT);
+        Random rand = new Random();
+
+        String serverAddress = PlacementStrategy.TARGETED_ONLY_PLACEMENT_SERVER_ADDRESSES.get(
+            rand.nextInt(PlacementStrategy.TARGETED_ONLY_PLACEMENT_SERVER_ADDRESSES.size()));
+
+        generatedDisks.set(0, generateMetalDiskWithServerAddress(serverAddress));
+        when(cache.getMetalDisks()).thenReturn(generatedDisks);
+
+        final List<MetalDiskInternal> disks = getPlacementDiskWithRequestedCount(REQUESTED_DISK_COUNT);
+        assertNotNull(disks);
+        assertEquals(REQUESTED_DISK_COUNT - 1, disks.size());
+        assertTrue(disks.stream().anyMatch(disk -> !PlacementStrategy.TARGETED_ONLY_PLACEMENT_SERVER_ADDRESSES.contains(disk.getServerAddress())));
         verify(cache).getMetalDisks();
     }
 

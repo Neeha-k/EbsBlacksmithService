@@ -14,7 +14,6 @@ import com.amazonaws.ebsblacksmithservice.MetalServer;
 @Jacksonized
 public class MetalServerInternal {
     private static final String COLON = ":";
-    private static final int SERVER_IP_INDEX = 0;
     private final String serverAddress;
 
     public static List<MetalServer> toCoralModel(
