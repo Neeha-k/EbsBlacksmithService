@@ -172,10 +172,6 @@
     "serverAddress": "30.133.7.112:5684"
   },
   {
-    "logicalDiskId": "3FHUDP8T",
-    "serverAddress": "30.133.7.112:5684"
-  },
-  {
     "logicalDiskId": "3FJKARZT",
     "serverAddress": "30.133.7.112:5684"
   },
@@ -189,10 +185,6 @@
   },
   {
     "logicalDiskId": "3FHTYB6T",
-    "serverAddress": "30.133.7.112:5684"
-  },
-  {
-    "logicalDiskId": "3FHU6N6T",
     "serverAddress": "30.133.7.112:5684"
   },
   {
@@ -229,14 +221,6 @@
   },
   {
     "logicalDiskId": "3RJL8S1A",
-    "serverAddress": "30.133.7.112:5684"
-  },
-  {
-    "logicalDiskId": "3FJMDTHT",
-    "serverAddress": "30.133.7.112:5684"
-  },
-  {
-    "logicalDiskId": "3RJJGT6A",
     "serverAddress": "30.133.7.112:5684"
   },
   {
@@ -281,18 +265,6 @@
   },
   {
     "logicalDiskId": "3FHTWPRT",
-    "serverAddress": "30.133.7.117:5684"
-  },
-  {
-    "logicalDiskId": "3FJK08ET",
-    "serverAddress": "30.133.7.117:5684"
-  },
-  {
-    "logicalDiskId": "3RJPL0SA",
-    "serverAddress": "30.133.7.117:5684"
-  },
-  {
-    "logicalDiskId": "3FHYL4VT",
     "serverAddress": "30.133.7.117:5684"
   },
   {
