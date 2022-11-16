@@ -1,21 +1,19 @@
 package com.amazonaws.ebsblacksmithservice.dagger;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import com.google.common.collect.ImmutableList;
-
-import dagger.Binds;
-import dagger.Lazy;
-import dagger.Module;
-
 import com.amazon.coral.bobcat.BobcatServer;
 import com.amazon.coral.dagger.service.ServiceManager;
 import com.amazon.coral.service.EnvironmentChecker;
 import com.amazon.ebs.dfdd.DfddHeartbeatHelper;
-
+import com.amazon.turtle.monitoring.TurtleCredentialsMonitor;
 import com.amazonaws.ebsblacksmithservice.dagger.modules.EagerSingletons;
+import com.google.common.collect.ImmutableList;
+import dagger.Binds;
+import dagger.Lazy;
+import dagger.Module;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 @Singleton
 public class EbsBlacksmithServiceManager implements ServiceManager {
@@ -29,7 +27,7 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
     private final DfddHeartbeatHelper insecureDfddHeartbeatHelper;
     private final DfddHeartbeatHelper secureDfddHeartbeatHelper;
     private final EndpointManager endpointManager;
-
+    private final TurtleCredentialsMonitor turtleCredentialsMonitor;
     private final EagerSingletons eagerSingletons;
 
     @Inject
@@ -39,12 +37,13 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
         @Named("SecureBobcat") BobcatServer secureBobcatServer,
         @Named("DfddHeartbeatHelperRegular") DfddHeartbeatHelper insecureDfddHeartbeatHelper,
         @Named("DfddHeartbeatHelperSecure") DfddHeartbeatHelper secureDfddHeartbeatHelper,
+        @Named("TurtleCredentialsMonitor") TurtleCredentialsMonitor turtleCredentialsMonitor,
         EagerSingletons eagerSingletons) {
         super();
         this.lazyEnvironmentChecker = lazyEnvironmentChecker;
         this.insecureDfddHeartbeatHelper = insecureDfddHeartbeatHelper;
         this.secureDfddHeartbeatHelper = secureDfddHeartbeatHelper;
-
+        this.turtleCredentialsMonitor = turtleCredentialsMonitor;
         this.endpointManager = new EndpointManager(ImmutableList.of(secureBobcatServer, insecureBobcatServer));
         this.eagerSingletons = eagerSingletons;
     }
@@ -61,6 +60,7 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
     @Override
     public void start() throws Exception {
         eagerSingletons.init();
+        turtleCredentialsMonitor.init();
         endpointManager.start();
         insecureDfddHeartbeatHelper.startHeartbeating();
         secureDfddHeartbeatHelper.startHeartbeating();
@@ -68,6 +68,7 @@ public class EbsBlacksmithServiceManager implements ServiceManager {
 
     @Override
     public void stop() throws Exception {
+        turtleCredentialsMonitor.shutdown();
         insecureDfddHeartbeatHelper.stopHeartbeating();
         secureDfddHeartbeatHelper.stopHeartbeating();
         endpointManager.shutdown();

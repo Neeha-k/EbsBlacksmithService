@@ -56,6 +56,8 @@ package.EbsBlacksmithService = {
             RIPJavaHelper = 2.0;
             # Turtle dependencies
             EbsTurtleJavaRuntimeSupport = 2.0;
+            # Publishing TurtleCredentialsValidity metrics
+            TurtleCredentialsMonitor = 1.0;
 
             # Heimdall
             HeimdallSupportCoral = 4.0;
@@ -79,8 +81,6 @@ package.EbsBlacksmithService = {
             WebsiteLogPusher = 3.6;
             # Turtle Dependencies
             EbsTurtleConfigUtils = 1.0;
-            # Publishing TurtleCredentialsValidity metrics
-            TurtleCredentialsMonitorCron = 1.0;
             #OpConfigInjector Setup
             Ruby = default;
             OpConfigInjector = 1.0;
