@@ -316,6 +316,22 @@
     "serverAddress": "30.135.143.139:5684"
   },
   {
+    "logicalDiskId": "2JGGEX7G",
+    "serverAddress": "30.135.143.139:5684"
+  },
+  {
+    "logicalDiskId": "2JGGU83G",
+    "serverAddress": "30.135.143.139:5684"
+  },
+  {
+    "logicalDiskId": "2JGGV0LG",
+    "serverAddress": "30.135.143.139:5684"
+  },
+  {
+    "logicalDiskId": "2JGGXS4G",
+    "serverAddress": "30.135.143.139:5684"
+  },
+  {
     "logicalDiskId": "2JG8707B",
     "serverAddress": "30.135.143.141:5684"
   },
